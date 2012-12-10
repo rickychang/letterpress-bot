@@ -37,6 +37,7 @@ class IPhone5ParsingSuite extends FunSuite {
     val img: BufferedImage = ImageIO.read(new File("images/test/iphone5-twitter-board1.jpg"))
     val imageParser = new IPhone5BoardParser(img, tileParser)
     val expectedBoardChars = List("FLHSO","YKAMW","FDRPV","LLXXR","ADGGS").mkString("\n")
+    println(imageParser.toString)
     assert(imageParser.toString == expectedBoardChars)
   }
   
