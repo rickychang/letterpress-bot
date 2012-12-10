@@ -11,16 +11,15 @@ import javax.imageio.ImageIO
 import me.rickychang.lpb.imageparser.ParserUtil.getResizedDimension
 import me.rickychang.lpb.imageparser.ParserUtil.getTileWidthHeight
 import me.rickychang.lpb.imageparser.ParserUtil.resizeImage
-import me.rickychang.lpb.imageparser.iPhone5TwitterBoardParser
-import me.rickychang.lpb.imageparser.iPhone5BoardTwitterParser
+import me.rickychang.lpb.imageparser.IPhone5BoardParser
 
 @RunWith(classOf[JUnitRunner])
-class iPhone5ParsingSuite extends FunSuite {
+class IPhone5ParsingSuite extends FunSuite {
 
-  test("Twitter iPhone 5 screenshot tile extraction") {
+  test("iPhone 5 screenshot tile extraction") {
     try {
-      val img: BufferedImage = ImageIO.read(new File("test/iphone5-twitter-board1.jpg"))
-      val imageParser = new iPhone5BoardTwitterParser(img)
+      val img: BufferedImage = ImageIO.read(new File("test/iphone5-test-board1.png"))
+      val imageParser = new IPhone5BoardParser(img)
       var i = 0
       for (img <- imageParser.tileImages) {
         i = i+1

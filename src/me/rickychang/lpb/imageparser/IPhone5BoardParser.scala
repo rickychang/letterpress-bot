@@ -5,18 +5,20 @@ import ParserUtil._
 
 // TODO: Abstract lots of this code to a super class that can be reused by
 //       other board parsing classes
-class iPhone5BoardTwitterParser(sourceImage: BufferedImage) {
-  import iPhone5TwitterBoardParser._
+class IPhone5BoardParser(sourceImage: BufferedImage) {
+  import IPhone5BoardParser._
 
+  val boardYOffset = (sourceImage.getHeight * BoardYOffsetRatio).toInt
   val boardWidth = getResizedDimension(sourceImage.getWidth)
-  val boardHeight = getResizedDimension(sourceImage.getHeight - BoardYOffset)
+  val boardHeight = getResizedDimension(sourceImage.getHeight - boardYOffset)
+ 
   val tileWidth = getTileWidthHeight(boardWidth)
   val tileHeight = getTileWidthHeight(boardHeight)
   
   val boardImage: BufferedImage = {
     val origBoardWidth = sourceImage.getWidth
-    val origBoardHeight = sourceImage.getHeight - BoardYOffset
-    val origBoard = sourceImage.getSubimage(0, BoardYOffset, origBoardWidth, origBoardHeight)
+    val origBoardHeight = sourceImage.getHeight - boardYOffset
+    val origBoard = sourceImage.getSubimage(0, boardYOffset, origBoardWidth, origBoardHeight)
     resizeImage(origBoard, boardWidth, boardHeight)
   }
 
@@ -29,11 +31,7 @@ class iPhone5BoardTwitterParser(sourceImage: BufferedImage) {
   
 }
 
-// TODO: Convert constants into functions that use relative dimensions 
-//       of screenshots.  E.g. board offset is shouldn't be absolute
-//       it should be relative so same code will work for scaled iPhone 5
-//       images like twitter attachments or png screenshots directly from 
-//       iOS
-object iPhone5TwitterBoardParser {
-  val BoardYOffset = 447
+object IPhone5BoardParser {
+  val BoardYOffsetRatio = 0.43661971830986f
+  val ScreenshotAspectRatio = 0.56338028169014f
 }
