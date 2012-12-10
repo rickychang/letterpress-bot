@@ -12,22 +12,30 @@ import me.rickychang.lpb.imageparser.ParserUtil.getResizedDimension
 import me.rickychang.lpb.imageparser.ParserUtil.getTileWidthHeight
 import me.rickychang.lpb.imageparser.ParserUtil.resizeImage
 import me.rickychang.lpb.imageparser.IPhone5BoardParser
+import net.sourceforge.javaocr.ocrPlugins.mseOCR.CharacterRange
+import net.sourceforge.javaocr.ocrPlugins.mseOCR.OCRScanner
+import net.sourceforge.javaocr.ocrPlugins.mseOCR.TrainingImageLoader
+import net.sourceforge.javaocr.scanner.PixelImage
+import java.util.HashMap
+import java.util.ArrayList
+import net.sourceforge.javaocr.ocrPlugins.mseOCR.TrainingImage
+import java.awt.Image
+import java.awt.Frame
+import me.rickychang.lpb.imageparser.ParserUtil
+import me.rickychang.lpb.imageparser.JavaOCRCharParser
 
 @RunWith(classOf[JUnitRunner])
 class ScratchSuite extends FunSuite {
 
-  test("Twitter iPhone 5 screenshot tile extraction") {
-    try {
-      val img: BufferedImage = ImageIO.read(new File("test/iphone5-twitter-board1.jpg"))
-      val imageParser = new IPhone5BoardParser(img)
-      var i = 0
-      for (img <- imageParser.tileImages) {
-        i = i+1
-        ImageIO.write(img, "png", new File("out/tile_%d.png".format(i)))
-      }
-    } catch {
-      case e: Exception => e.printStackTrace()
-    }
+  test("tile extraction util method test") {
+    ParserUtil.extractTiles("images", "Photo Dec 09, 9 00 41 PM.png")
+  }
+
+  test("JavaOCR Char Parser") {
+    val tileParser: JavaOCRCharParser = new JavaOCRCharParser("images/training/light")
+    val img: BufferedImage = ImageIO.read(new File("images/test/iphone5-twitter-board2.jpg"))
+    val imageParser = new IPhone5BoardParser(img, tileParser)
+    println(imageParser.toString)
   }
 
 }

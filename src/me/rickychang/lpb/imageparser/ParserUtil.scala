@@ -1,9 +1,11 @@
 package me.rickychang.lpb.imageparser
 
 import java.awt.Graphics2D
-import java.awt.geom.AffineTransform
-import java.awt.image.BufferedImage
 import java.awt.RenderingHints
+import java.awt.image.BufferedImage
+import java.io.File
+
+import javax.imageio.ImageIO
 
 object ParserUtil {
 
@@ -28,5 +30,21 @@ object ParserUtil {
     graphics2D.drawImage(originalImage, 0, 0, width, height, null)
     graphics2D.dispose()
     scaledImage
+  }
+  
+  /**
+   * Given an input directory and relative screenshot image filename, 
+   * extract individual tile images from screenshot and write to disk 
+   * as individual files in same directory
+   */
+  def extractTiles(path: String, sourceFile: String): Unit = {
+      val img: BufferedImage = ImageIO.read(new File("%s/%s".format(path, sourceFile)))
+      val tileParser: JavaOCRCharParser = new JavaOCRCharParser("images/training/light")
+      val imageParser = new IPhone5BoardParser(img, tileParser)
+      var i = 0
+      for (img <- imageParser.tileImages) {
+        i += 1
+        ImageIO.write(img, "png", new File("%s/tile_%d.png".format(path, i)))
+      }
   }
 }

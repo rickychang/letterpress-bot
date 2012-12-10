@@ -1,11 +1,12 @@
 package me.rickychang.lpb.imageparser
 
 import java.awt.image.BufferedImage
+import scala.collection.mutable.StringBuilder
 import ParserUtil._
 
 // TODO: Abstract lots of this code to a super class that can be reused by
 //       other board parsing classes
-class IPhone5BoardParser(sourceImage: BufferedImage) {
+class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser) {
   import IPhone5BoardParser._
 
   val boardYOffset = (sourceImage.getHeight * BoardYOffsetRatio).toInt
@@ -24,10 +25,21 @@ class IPhone5BoardParser(sourceImage: BufferedImage) {
 
   val tileImages: List[BufferedImage] = {
     for {
-      x <- 0 until boardWidth by tileWidth
       y <- 0 until boardHeight by tileHeight
+      x <- 0 until boardWidth by tileWidth
     } yield boardImage.getSubimage(x, y, tileWidth, tileHeight)
   } toList
+  
+  val tileChars: List[Char] = tileImages.map{ charParser.extractChar(_).charAt(0) }
+  
+  override def toString = {
+    val buffer = new StringBuilder
+    for (i <- 0 until tileChars.length) {
+      buffer += tileChars(i)
+      if ((i + 1) % 5 == 0) buffer += '\n'
+    }
+    buffer.stripLineEnd
+  }
   
 }
 
