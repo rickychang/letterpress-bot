@@ -12,10 +12,10 @@ import java.util.HashMap
 import java.util.ArrayList
 
 class JavaOCRCharParser(trainingImagePath: String) extends TileCharParser {
-  val scanner: OCRScanner = new OCRScanner
-  val loader: TrainingImageLoader = new TrainingImageLoader
-  val frame: Frame = new Frame
-  val trainingImageMap: HashMap[Character, ArrayList[TrainingImage]] = new HashMap[Character, ArrayList[TrainingImage]]()
+  private val scanner: OCRScanner = new OCRScanner
+  private val loader: TrainingImageLoader = new TrainingImageLoader
+  private val frame: Frame = new Frame
+  private val trainingImageMap: HashMap[Character, ArrayList[TrainingImage]] = new HashMap[Character, ArrayList[TrainingImage]]()
 
   for (f <- new java.io.File(trainingImagePath).listFiles.filter(_.getName.endsWith(".png"))) {
     val char = f.getName().split("_")(0).charAt(0)

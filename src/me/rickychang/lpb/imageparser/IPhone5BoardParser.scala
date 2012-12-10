@@ -36,7 +36,7 @@ class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser)
     val buffer = new StringBuilder
     for (i <- 0 until tileChars.length) {
       buffer += tileChars(i)
-      if ((i + 1) % 5 == 0) buffer += '\n'
+      if ((i + 1) % TilesPerRowColumn == 0) buffer += '\n'
     }
     buffer.stripLineEnd
   }

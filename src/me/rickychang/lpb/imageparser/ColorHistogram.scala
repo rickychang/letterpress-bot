@@ -6,7 +6,7 @@ import java.awt.Rectangle
 import java.awt.Color
 
 /**
- * Histogram of colors in image.  Note: this implementation does not place the
+ * Histogram of colors in an image.  Note: this implementation does not place the
  * raw colors into bins as you normally would.  Because the color space of
  * game tiles is very restricted, we simply compute the histogram of
  * all colors in the image.
@@ -15,13 +15,13 @@ class ColorHistogram(image: BufferedImage) {
 
   private val intPixels = image.getData(new Rectangle(image.getWidth, image.getHeight)).getDataBuffer().asInstanceOf[DataBufferInt].getData()
 
-  private val sortedColorHistogram = {
-    intPixels.groupBy(identity).mapValues(_.size).toList.sortWith { (e1, e2) => (e1._2 > e2._2) }
-      .map { case (intPixel, count) => (new Color(intPixel), count) }
+  val histogramMap = {
+    intPixels.groupBy(identity).mapValues(_.size)
   }
 
-  val dominantColor = sortedColorHistogram.head._1
+  val sortedHistogram = histogramMap.toList.sortWith { (e1, e2) => (e1._2 > e2._2) }
+    .map { case (intPixel, count) => (new Color(intPixel), count) }
 
-  lazy val histogram = sortedColorHistogram.toMap
+  val dominantColor = sortedHistogram.head._1
 
 }
