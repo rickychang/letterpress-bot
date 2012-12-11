@@ -18,7 +18,7 @@ class JavaOCRCharParser(trainingImagePath: String) extends TileCharParser {
   private val trainingImageMap: HashMap[Character, ArrayList[TrainingImage]] = new HashMap[Character, ArrayList[TrainingImage]]()
 
   for (f <- new java.io.File(trainingImagePath).listFiles.filter(_.getName.endsWith(".png"))) {
-    val char = f.getName().split("_")(0).charAt(0)
+    val char = f.getName().split("_").head.charAt(0)
     loader.load(frame, f.getAbsolutePath(), new CharacterRange(char, char), trainingImageMap)
   }
   scanner.addTrainingImages(trainingImageMap)

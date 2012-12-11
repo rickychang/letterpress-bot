@@ -2,11 +2,15 @@ package me.rickychang.lpb.imageparser
 
 import java.awt.image.BufferedImage
 import scala.collection.mutable.StringBuilder
-import ParserUtil._
+import ParserUtil.TilesPerRowColumn
+import ParserUtil.getResizedDimension
+import ParserUtil.getTileWidthHeight
+import ParserUtil.resizeImage
+import me.rickychang.lpb.board.TileState
 
 // TODO: Abstract lots of this code to a super class that can be reused by
 //       other board parsing classes
-class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser) {
+class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser, stateParser: TileStateParser) {
   import IPhone5BoardParser._
 
   val boardYOffset = (sourceImage.getHeight * BoardYOffsetRatio).toInt
@@ -32,10 +36,12 @@ class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser)
   
   val tileChars: List[Char] = tileImages.map{ charParser.extractChar(_).charAt(0) }
   
+  val tileStates: List[TileState] = tileImages.map{ stateParser.extractColor(_) }
+  
   override def toString = {
     val buffer = new StringBuilder
     for (i <- 0 until tileChars.length) {
-      buffer += tileChars(i)
+      buffer.append("%s%s ".format(tileChars(i), tileStates(i)))
       if ((i + 1) % TilesPerRowColumn == 0) buffer += '\n'
     }
     buffer.stripLineEnd

@@ -40,7 +40,7 @@ object ParserUtil {
   def extractTiles(path: String, sourceFile: String): Unit = {
       val img: BufferedImage = ImageIO.read(new File("%s/%s".format(path, sourceFile)))
       val tileParser: JavaOCRCharParser = new JavaOCRCharParser("images/training/light")
-      val imageParser = new IPhone5BoardParser(img, tileParser)
+      val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
       var i = 0
       for (img <- imageParser.tileImages) {
         i += 1
