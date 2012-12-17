@@ -32,45 +32,83 @@ import me.rickychang.lpb.board.TileColors
 import me.rickychang.lpb.imageparser.TileStateParser
 import me.rickychang.lpb.board.Free
 import me.rickychang.lpb.imageparser.ColorHistogramTileStateParser
+import me.rickychang.lpb.solver.WordDictionary
+import me.rickychang.lpb.solver.SolverUtil
+import me.rickychang.lpb.board.GameBoard
+import me.rickychang.lpb.solver.WordSolver
+import util.control.Breaks._
 
 @RunWith(classOf[JUnitRunner])
 class ScratchSuite extends FunSuite {
-
   
-  test("Color histogram scratch") {
+//  test("Scratch") {
+//	  println("creating dict" )
+//	  var s = System.currentTimeMillis
+//	  val dict = new WordDictionary("resources/lpWords.txt")
+//	  println("done creating dict: %d".format(System.currentTimeMillis - s))
+//	  val testWord = "cat"
+//	  val testOccurrences = dict.wordOccurrences(testWord)
+//	  println("sleeping 10")
+//	  Thread.sleep(10000)
+//	  println(testOccurrences)
+//	  s = System.currentTimeMillis
+//	  val matchingWords = dict.getWords(testOccurrences)
+//	  println("done lookup 1 dict: %d".format(System.currentTimeMillis - s))
+//
+//	  println(matchingWords)
+//	  s = System.currentTimeMillis
+//	  println(dict.getWords(dict.wordOccurrences("ABOLITIONISM")))
+//	  println("done lookup 2 dict: %d".format(System.currentTimeMillis - s))
+//
+//  }
+
+//  test("Scratch") {
+//    def combinations(occurrences:  List[(Char, Int)]): List[ List[(Char, Int)]] = {
+//      def validFrequencies(freq: (Char, Int)) = {
+//        val count = freq._2
+//        for (i <- 1 to count) yield (freq._1, i)
+//      }
+//      def comboHelper(o:  List[(Char, Int)]): List[ List[(Char, Int)]] = {
+//        if (o.isEmpty) List(List()) else {
+//          val tailSubsets = comboHelper(o.tail)
+//          (for {
+//            subset <- tailSubsets
+//            o <- validFrequencies(o.head)
+//          } yield o :: subset) ++ tailSubsets
+//        }
+//      }
+//      comboHelper(occurrences)
+//    }
+//    val dict = new WordDictionary("resources/lpWords.txt")
+//    val testOccurrences = SolverUtil.wordOccurrences("ABCDEFG")
+//    println(combinations(testOccurrences))
+//  }
+  
+  test("Scratch") {
     val tileParser: JavaOCRCharParser = new JavaOCRCharParser("images/training/light")
     val img: BufferedImage = ImageIO.read(new File("images/test/iphone5-twitter-board2.jpg"))
     val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
-    for (tile <- imageParser.tileImages) {
-      val imgData = tile.getData(new Rectangle(116, 116)).getDataBuffer().asInstanceOf[DataBufferInt].getData()
-      val pixels = imgData map { new Color(_) }
-      val colorHistogram = pixels.groupBy(identity).mapValues(_.size).toList.sortWith { (e1, e2) => (e1._2 > e2._2) }
-      val domColors = colorHistogram.take(1)
-      println(domColors)
+    val board = new GameBoard(imageParser.boardTiles)
+    val solver = new WordSolver(board)
+    val tiles = board.tiles
+    println(imageParser.toString)
+    val tileCombos = (2 to 18).map(tiles.combinations(_)).fold(Iterator.empty) { _ ++ _ }
+    val dict = new WordDictionary("resources/lpWords.txt")
+    breakable {
+      for (combo <- tileCombos) {
+    	val word = combo.map(_._1).mkString
+//    	println("testing: %s".format(word))
+        val occurrences = SolverUtil.wordOccurrences(word)
+        val words = dict.getWords(occurrences) match {
+          case Some(l) => l
+          case _ => List.empty
+        }
+        if (!words.isEmpty) {
+          println(words)
+          println(solver.wordScore(combo))
+        }
+      }
     }
   }
-  
-  test("ColorHistogram") {
-    val tileParser: JavaOCRCharParser = new JavaOCRCharParser("images/training/light")
-    val histogramParser = ColorHistogramTileStateParser
-    val img: BufferedImage = ImageIO.read(new File("images/test/iphone5-test-board1.png"))
-    val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
-    val tileStates = imageParser.tileImages.map(histogramParser.extractColor(_))
-    val buffer: StringBuilder = new StringBuilder
-    for (i <- 0 until tileStates.length) {
-      buffer.append(tileStates(i))
-      if ((i + 1) % TilesPerRowColumn == 0) buffer += '\n'
-    }
-    println(buffer.stripLineEnd)
-  }
-  
-  test("Scratch") {
-    val dummyTileStateParser = new TileStateParser { override def extractColor(tileImage: BufferedImage) = {Free}}
-    println(dummyTileStateParser.colorToStateMap)
-    println(dummyTileStateParser.normalizeColor(new Color(233,232, 228)))
-    println(dummyTileStateParser.normalizeColor(new Color(120, 200, 245)))
-    println(dummyTileStateParser.normalizeColor(new Color(119, 200, 245)))
-  }
-
 
 }
