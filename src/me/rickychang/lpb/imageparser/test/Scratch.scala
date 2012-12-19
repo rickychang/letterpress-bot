@@ -94,21 +94,17 @@ class ScratchSuite extends FunSuite {
     println(imageParser.toString)
     val tileCombos = (2 to 18).map(tiles.combinations(_)).fold(Iterator.empty) { _ ++ _ }
     val dict = new WordDictionary("resources/lpWords.txt")
-    breakable {
-      for (combo <- tileCombos) {
-    	val word = combo.map(_._1).mkString
-//    	println("testing: %s".format(word))
-        val occurrences = SolverUtil.wordOccurrences(word)
-        val words = dict.getWords(occurrences) match {
-          case Some(l) => l
-          case _ => List.empty
-        }
-        if (!words.isEmpty) {
-          println(words)
-          println(solver.wordScore(combo))
-        }
-      }
+    println("dictionary loaded.")
+    val s = System.currentTimeMillis
+    var count = 0
+    println(dict.wordsWithOccurrences.size)
+    
+    for (w <- dict.wordsWithOccurrences) {
+      count += 1
+      if (count % 1000 == 0) println(count)
     }
+    println(count)
+    println("iterating over words: %d".format(System.currentTimeMillis - s))
   }
 
 }
