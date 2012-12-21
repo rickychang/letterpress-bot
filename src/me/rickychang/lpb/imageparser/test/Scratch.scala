@@ -86,25 +86,18 @@ class ScratchSuite extends FunSuite {
   
   test("Scratch") {
     val tileParser: JavaOCRCharParser = new JavaOCRCharParser("images/training/light")
-    val img: BufferedImage = ImageIO.read(new File("images/test/iphone5-twitter-board2.jpg"))
+    val img: BufferedImage = ImageIO.read(new File("images/test/georges.png"))
     val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
     val board = new GameBoard(imageParser.boardTiles)
-    val solver = new WordSolver(board)
-    val tiles = board.tiles
     println(imageParser.toString)
-    val tileCombos = (2 to 18).map(tiles.combinations(_)).fold(Iterator.empty) { _ ++ _ }
     val dict = new WordDictionary("resources/lpWords.txt")
     println("dictionary loaded.")
-    val s = System.currentTimeMillis
-    var count = 0
-    println(dict.wordsWithOccurrences.size)
-    
-    for (w <- dict.wordsWithOccurrences) {
-      count += 1
-      if (count % 1000 == 0) println(count)
+    val solver = new WordSolver(board, dict)
+    val moves = solver.findWords(10)
+    for (m <- moves) {
+      val (word, tiles) = m
+      println("%s : %s".format(word, solver.wordScore(tiles)))
     }
-    println(count)
-    println("iterating over words: %d".format(System.currentTimeMillis - s))
   }
 
 }
