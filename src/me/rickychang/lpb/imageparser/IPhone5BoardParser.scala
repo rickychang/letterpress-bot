@@ -38,6 +38,10 @@ class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser,
   
   val tileStates: List[TileState] = tileImages.map{ stateParser.extractColor(_) }
   
+  val boardTiles: List[(Char, TileState, Int)] = {
+    (tileChars, tileStates, tileChars.indices).zipped.toList
+  }
+  
   override def toString = {
     val buffer = new StringBuilder
     for (i <- 0 until tileChars.length) {
