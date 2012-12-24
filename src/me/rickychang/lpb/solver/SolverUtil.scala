@@ -6,8 +6,7 @@ object SolverUtil {
 
   def wordOccurrences(w: String): Occurrences = {
     val groupedLetters = w.toUpperCase.toList.groupBy((c: Char) => c)
-    val letterCounts = groupedLetters map { case (x, y) => (x, y.length) }
-    letterCounts.toMap
+    groupedLetters map { case (x, y) => (x, y.length) }
   }
   
 //  def canPlayWord(board: Occurrences, )
