@@ -10,7 +10,7 @@ import scala.collection.mutable.MutableList
 /**
  * Utility object for testing solver against local images
  */
-object ImageSolverUtil {
+object ImageSolver {
   
   private val boardSolver = new BoardSolver(new WordDictionary)
   private val tileParser = new JavaOCRCharParser
