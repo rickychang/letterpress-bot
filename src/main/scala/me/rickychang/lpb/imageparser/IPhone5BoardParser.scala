@@ -7,6 +7,7 @@ import ParserUtil.getResizedDimension
 import ParserUtil.getTileWidthHeight
 import ParserUtil.resizeImage
 import me.rickychang.lpb.board.TileState
+import me.rickychang.lpb.board.GameBoard
 
 // TODO: Abstract lots of this code to a super class that can be reused by
 class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser, stateParser: TileStateParser) {
@@ -40,6 +41,8 @@ class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser,
   val boardTiles: List[(Char, TileState, Int)] = {
     (tileChars, tileStates, tileChars.indices).zipped.toList
   }
+  
+  val gameBoard = new GameBoard(boardTiles)
   
   override def toString = {
     val buffer = new StringBuilder

@@ -3,14 +3,15 @@ package me.rickychang.lpb.solver
 import me.rickychang.lpb.board.GameBoard
 import me.rickychang.lpb.board.TileState
 
-class WordSolver(val board: GameBoard, val wordDict: WordDictionary) {
+class BoardSolver(val wordDict: WordDictionary) {
 
   def wordScore(tiles: List[(Char, TileState, Int)]): (Int, Int) = {
     tiles.map(t => Pair(t._2.playerPotential, t._2.opponentPotential)).foldLeft((0, 0)) { (acc, v) => (acc._1 + v._1, acc._2 + v._2) }
   }
 
-  def findWords(maxWords: Int): List[(String, List[(Char, TileState, Int)])] = {
-    val validWords = wordDict.wordsWithOccurrences.flatMap(w => canPlay(w._1, w._2))
+  //TODO: add type aliases to package object for tile tuples
+  def findWords(board: GameBoard, maxWords: Int): List[(String, List[(Char, TileState, Int)])] = {
+    val validWords = wordDict.wordsWithOccurrences.flatMap(w => canPlay(board, w._1, w._2))
     validWords.sortWith((e1, e2) => {
       val s1 = wordScore(e1._2)
       val s2 = wordScore(e2._2)
@@ -18,7 +19,7 @@ class WordSolver(val board: GameBoard, val wordDict: WordDictionary) {
     }).take(maxWords)
   }
   
-  private def canPlay(candidate: String, candOccurrences: Map[Char, Int]): Option[(String, List[(Char, TileState, Int)])] = {
+  private def canPlay(board: GameBoard, candidate: String, candOccurrences: Map[Char, Int]): Option[(String, List[(Char, TileState, Int)])] = {
     def helper(acc: Set[(Char, TileState, Int)], occList: List[(Char, Int)]): Option[(String, List[(Char, TileState, Int)])] = {
       if (occList.isEmpty) Some((candidate, acc.toList))
       else {

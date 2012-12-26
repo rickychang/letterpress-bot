@@ -11,7 +11,7 @@ import me.rickychang.lpb.imageparser.ColorHistogramTileStateParser
 import me.rickychang.lpb.imageparser.IPhone5BoardParser
 import me.rickychang.lpb.imageparser.JavaOCRCharParser
 import me.rickychang.lpb.solver.WordDictionary
-import me.rickychang.lpb.solver.WordSolver
+import me.rickychang.lpb.solver.BoardSolver
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
@@ -60,7 +60,7 @@ class ScratchSuite extends FunSuite {
 //    val testOccurrences = SolverUtil.wordOccurrences("ABCDEFG")
 //    println(combinations(testOccurrences))
 //  }
-  
+  //TODO: Turn this into a unit test for end-to-end board solving
   test("Scratch") {
     val tileParser: JavaOCRCharParser = new JavaOCRCharParser
     val img: BufferedImage = ImageIO.read(getClass.getResource("/images/test/georges.png"))
@@ -69,8 +69,8 @@ class ScratchSuite extends FunSuite {
     println(imageParser.toString)
     val dict = new WordDictionary
     println("dictionary loaded.")
-    val solver = new WordSolver(board, dict)
-    val moves = solver.findWords(10)
+    val solver = new BoardSolver(dict)
+    val moves = solver.findWords(board, 10)
     for (m <- moves) {
       val (word, tiles) = m
       println("%s : %s".format(word, solver.wordScore(tiles)))
