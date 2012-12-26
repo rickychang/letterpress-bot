@@ -11,11 +11,11 @@ trait TileStateParser {
 
   val colorToStateMap: Map[Color, TileState] = {
     def genPair(s: TileState) = (c: Color) => (c, s)
-    val colorStatePairs = FreeColors.map(genPair(new Free)) ++
-      PlayerOccupiedColors.map(genPair(new PlayerOccupied)) ++
-      PlayerDefendedColors.map(genPair(new PlayerDefended)) ++
-      OpponentOccupiedColors.map(genPair(new OpponentOccupied)) ++
-      OpponentDefendedColors.map(genPair(new OpponentDefended))
+    val colorStatePairs = FreeColors.map(genPair(Free)) ++
+      PlayerOccupiedColors.map(genPair(PlayerOccupied)) ++
+      PlayerDefendedColors.map(genPair(PlayerDefended)) ++
+      OpponentOccupiedColors.map(genPair(OpponentOccupied)) ++
+      OpponentDefendedColors.map(genPair(OpponentDefended))
     colorStatePairs toMap
   }
   

@@ -10,7 +10,5 @@ object SolverUtil {
     val groupedLetters = w.toUpperCase.toList.groupBy((c: Char) => c)
     groupedLetters map { case (x, y) => (x, y.length) }
   }
-  
-//  def canPlayWord(board: Occurrences, )
 
 }
