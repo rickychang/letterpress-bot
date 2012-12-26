@@ -5,8 +5,6 @@ import me.rickychang.lpb.solver.SolverUtil
 
 class GameBoard(val tiles: List[(Char, TileState, Int)]) {
   
-  val (tileChars, tileStates, tileIndices) = tiles.unzip3
-  
   val boardOccurrences = tiles.groupBy((c => c._1)).mapValues(_.sortWith((e1, e2) => e1._2.playerPotential > e2._2.playerPotential))
   
   val playerOccupiedTiles = tiles collect { case t: PlayerOccupied => t }
