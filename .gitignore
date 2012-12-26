@@ -6,7 +6,7 @@ target/
 lib_managed/
 src_managed/
 project/boot/
-*/resources/application.conf
+/*/**/resources/application.conf
 out/*
 bin/*
 *~

@@ -14,6 +14,7 @@ import me.rickychang.lpb.solver.WordDictionary
 import me.rickychang.lpb.solver.BoardSolver
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import com.typesafe.config.ConfigFactory
 
 @RunWith(classOf[JUnitRunner])
 class ScratchSuite extends FunSuite {
@@ -75,6 +76,11 @@ class ScratchSuite extends FunSuite {
       val (word, tiles) = m
       println("%s : %s".format(word, solver.wordScore(tiles)))
     }
+  }
+
+  test("Config test") {
+    val conf = ConfigFactory.load
+    println(conf.getString("consumer.key"))
   }
 
 }
