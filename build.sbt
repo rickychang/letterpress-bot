@@ -1,3 +1,7 @@
+import AssemblyKeys._
+
+assemblySettings
+
 name := "LetterpressBot"
 
 version := "0.1"
