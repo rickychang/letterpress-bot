@@ -9,7 +9,6 @@ import ParserUtil.resizeImage
 import me.rickychang.lpb.board.TileState
 
 // TODO: Abstract lots of this code to a super class that can be reused by
-//       other board parsing classes
 class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser, stateParser: TileStateParser) {
   import IPhone5BoardParser._
 
@@ -46,7 +45,7 @@ class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser,
     val buffer = new StringBuilder
     for (i <- 0 until tileChars.length) {
       buffer.append("%s%s ".format(tileChars(i), tileStates(i)))
-      if ((i + 1) % TilesPerRowColumn == 0) buffer += '\n'
+      if ((i + 1) % TilesPerRowColumn == 0) buffer.replace(buffer.length - 1, buffer.length, "\n")
     }
     buffer.stripLineEnd
   }

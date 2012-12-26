@@ -2,6 +2,8 @@ package me.rickychang.lpb.solver
 
 object SolverUtil {
   
+  val DefaultWordDict = "/dicts/lpWords.txt"
+  
   type Occurrences = Map[Char, Int]
 
   def wordOccurrences(w: String): Occurrences = {

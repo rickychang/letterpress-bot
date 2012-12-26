@@ -1,42 +1,19 @@
-package me.rickychang.lpb.imageparser.test
+package me.rickychang.lpb.scratch
 
 import java.awt.image.BufferedImage
-import scala.collection.mutable.StringBuilder
 import java.io.File
-import java.io.IOException
-import scala.collection.mutable.ListBuffer
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 import javax.imageio.ImageIO
-import me.rickychang.lpb.imageparser.ParserUtil.getResizedDimension
-import me.rickychang.lpb.imageparser.ParserUtil.getTileWidthHeight
-import me.rickychang.lpb.imageparser.ParserUtil._
-import me.rickychang.lpb.imageparser.IPhone5BoardParser
-import net.sourceforge.javaocr.ocrPlugins.mseOCR.CharacterRange
-import net.sourceforge.javaocr.ocrPlugins.mseOCR.OCRScanner
-import net.sourceforge.javaocr.ocrPlugins.mseOCR.TrainingImageLoader
-import net.sourceforge.javaocr.scanner.PixelImage
-import java.util.HashMap
-import java.util.ArrayList
-import net.sourceforge.javaocr.ocrPlugins.mseOCR.TrainingImage
-import java.awt.Image
-import java.awt.Frame
-import me.rickychang.lpb.imageparser.ParserUtil
-import me.rickychang.lpb.imageparser.JavaOCRCharParser
-import java.awt.image.DataBufferInt
-import java.awt.Color
-import java.awt.Rectangle
-import me.rickychang.lpb.imageparser.ColorHistogram
-import me.rickychang.lpb.board.TileColors
-import me.rickychang.lpb.imageparser.TileStateParser
-import me.rickychang.lpb.board.Free
-import me.rickychang.lpb.imageparser.ColorHistogramTileStateParser
-import me.rickychang.lpb.solver.WordDictionary
-import me.rickychang.lpb.solver.SolverUtil
 import me.rickychang.lpb.board.GameBoard
+import me.rickychang.lpb.imageparser.ColorHistogramTileStateParser
+import me.rickychang.lpb.imageparser.IPhone5BoardParser
+import me.rickychang.lpb.imageparser.JavaOCRCharParser
+import me.rickychang.lpb.solver.WordDictionary
 import me.rickychang.lpb.solver.WordSolver
-import util.control.Breaks._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class ScratchSuite extends FunSuite {
@@ -85,12 +62,12 @@ class ScratchSuite extends FunSuite {
 //  }
   
   test("Scratch") {
-    val tileParser: JavaOCRCharParser = new JavaOCRCharParser("images/training/light")
-    val img: BufferedImage = ImageIO.read(new File("images/test/georges.png"))
+    val tileParser: JavaOCRCharParser = new JavaOCRCharParser
+    val img: BufferedImage = ImageIO.read(getClass.getResource("/images/test/georges.png"))
     val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
     val board = new GameBoard(imageParser.boardTiles)
     println(imageParser.toString)
-    val dict = new WordDictionary("resources/lpWords.txt")
+    val dict = new WordDictionary
     println("dictionary loaded.")
     val solver = new WordSolver(board, dict)
     val moves = solver.findWords(10)

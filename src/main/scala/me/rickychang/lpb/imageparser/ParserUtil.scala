@@ -11,6 +11,8 @@ object ParserUtil {
 
   val TilesPerRowColumn = 5
   
+  val DefaultTrainingImagePath = "/images/training/light"
+  
   def getResizedDimension(origDim: Int): Int = {
     (origDim + TilesPerRowColumn - 1) / TilesPerRowColumn * TilesPerRowColumn
   }

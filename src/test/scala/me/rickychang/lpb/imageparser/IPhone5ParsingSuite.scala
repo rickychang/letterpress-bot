@@ -1,30 +1,24 @@
-package me.rickychang.lpb.imageparser.test
+package me.rickychang.lpb.imageparser
 
+import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.File
-import java.io.IOException
-import scala.collection.mutable.ListBuffer
+
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
+
 import javax.imageio.ImageIO
-import me.rickychang.lpb.imageparser.ParserUtil.getResizedDimension
-import me.rickychang.lpb.imageparser.ParserUtil.getTileWidthHeight
-import me.rickychang.lpb.imageparser.ParserUtil.resizeImage
-import me.rickychang.lpb.imageparser.IPhone5BoardParser
-import me.rickychang.lpb.imageparser.JavaOCRCharParser
 import me.rickychang.lpb.board.TileColors
-import java.awt.Color
-import me.rickychang.lpb.imageparser.ColorHistogramTileStateParser
 
 @RunWith(classOf[JUnitRunner])
 class IPhone5ParsingSuite extends FunSuite {
 
-  val tileParser: JavaOCRCharParser = new JavaOCRCharParser("images/training/light")
+  val tileParser: JavaOCRCharParser = new JavaOCRCharParser("/images/training/light")
   
   test("iPhone 5 screenshot tile extraction") {
     try {
-      val img: BufferedImage = ImageIO.read(new File("images/test/iphone5-test-board1.png"))
+      val img: BufferedImage = ImageIO.read(getClass.getResource("/images/test/iphone5-test-board1.png"))
       val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
       var i = 0
       for (img <- imageParser.tileImages) {
@@ -37,17 +31,25 @@ class IPhone5ParsingSuite extends FunSuite {
   }
   
   test("twitter board 1 parsing") {
-    val img: BufferedImage = ImageIO.read(new File("images/test/iphone5-twitter-board1.jpg"))
+    val img: BufferedImage = ImageIO.read(getClass.getResource("/images/test/iphone5-twitter-board1.jpg"))
     val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
-    val expectedBoardChars = List("FLHSO","YKAMW","FDRPV","LLXXR","ADGGS").mkString("\n")
-    println(imageParser.toString)
+    val expectedBoardChars = List("FR LR HR Sr Ob",
+    							  "Yr Kr Ar Mb Wr",
+    							  "Fw Dw Rr Pb Vw",
+    							  "Lb Lr Xr Xw Rb",
+    							  "Ar Dw Gr Gw Sr").mkString("\n")
     assert(imageParser.toString == expectedBoardChars)
   }
   
     test("twitter board 2 parsing") {
-    val img: BufferedImage = ImageIO.read(new File("images/test/iphone5-twitter-board2.jpg"))
+    val img: BufferedImage = ImageIO.read(getClass.getResource("/images/test/iphone5-twitter-board2.jpg"))
     val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
-    val expectedBoardChars = List("BNETS","SKPCN","SMTPH","SNJTV","FVPAA").mkString("\n")
+    val expectedBoardChars = List("Br Nb Eb Tr SR",
+    							  "Sb Kb Pr Cb Nr",
+    							  "SB Mb Tw Pw Hr",
+    							  "Sb Nw Jw Tr Vw",
+    							  "Fr Vw Pw Ab Ab").mkString("\n")
+    println(imageParser.toString)
     assert(imageParser.toString == expectedBoardChars)
   }
     

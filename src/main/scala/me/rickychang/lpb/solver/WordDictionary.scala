@@ -1,12 +1,13 @@
 package me.rickychang.lpb.solver
 
 import scala.io.Source
+import scala.io.BufferedSource
 
 import me.rickychang.lpb.solver.SolverUtil._
 
-class WordDictionary(inputWordFile: String) {
+class WordDictionary(inputWordFile: String = DefaultWordDict) {
   
   val wordsWithOccurrences: List[(String, Occurrences)] = {
-    Source.fromFile(inputWordFile).getLines.toTraversable.map(w => (w, wordOccurrences(w))).toList
+    Source.fromURL(getClass.getResource(inputWordFile)).getLines.map(w => (w, wordOccurrences(w))).toList
   }
 }

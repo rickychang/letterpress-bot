@@ -2,6 +2,7 @@
 .classpath
 .settings/
 .project
+target/
 out/*
 bin/*
 *~
