@@ -14,7 +14,7 @@ import me.rickychang.lpb.board.TileColors
 @RunWith(classOf[JUnitRunner])
 class IPhone5ParsingSuite extends FunSuite {
 
-  val tileParser: JavaOCRCharParser = new JavaOCRCharParser("/images/training/light")
+  val tileParser = new JavaOCRCharParser
   
   test("iPhone 5 screenshot tile extraction") {
     try {
