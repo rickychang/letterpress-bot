@@ -41,7 +41,7 @@ object ParserUtil {
    */
   def extractTiles(path: String, sourceFile: String): Unit = {
       val img: BufferedImage = ImageIO.read(new File("%s/%s".format(path, sourceFile)))
-      val tileParser: JavaOCRCharParser = new JavaOCRCharParser("images/training/light")
+      val tileParser: JavaOCRCharParser = new JavaOCRCharParser("/images/training")
       val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
       for ((img,i) <- imageParser.tileImages.view.zipWithIndex) {
         ImageIO.write(img, "png", new File("%s/tile_%d.png".format(path, i)))
