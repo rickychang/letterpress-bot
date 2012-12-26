@@ -9,8 +9,8 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
 libraryDependencies ++= Seq(
-	"junit" % "junit" % "4.8.1",
-	"org.scalatest" %% "scalatest" % "1.8"
+	"junit" % "junit" % "4.8.1" % "test",
+	"org.scalatest" %% "scalatest" % "1.8" % "test"
 	)
 
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource

@@ -3,6 +3,9 @@
 .settings/
 .project
 target/
+lib_managed/
+src_managed/
+project/boot/
 out/*
 bin/*
 *~
