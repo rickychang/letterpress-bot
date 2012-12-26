@@ -16,7 +16,7 @@ class BoardSolver(val wordDict: WordDictionary) {
       val s1 = wordScore(e1._2)
       val s2 = wordScore(e2._2)
       s1._1 - s1._2 > s2._1 - s2._2
-    }).take(maxWords)
+    }).take(maxWords).toList
   }
   
   private def canPlay(board: GameBoard, candidate: String, candOccurrences: Map[Char, Int]): Option[(String, List[(Char, TileState, Int)])] = {
