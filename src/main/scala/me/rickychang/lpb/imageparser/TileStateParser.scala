@@ -6,7 +6,7 @@ import java.awt.Color
 import me.rickychang.lpb.board.TileColors._
 import me.rickychang.lpb.board._
 
-
+// TODO add support for light and dark board themes
 trait TileStateParser {
 
   val colorToStateMap: Map[Color, TileState] = {

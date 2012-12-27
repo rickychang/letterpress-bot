@@ -9,7 +9,8 @@ import ParserUtil.resizeImage
 import me.rickychang.lpb.board.TileState
 import me.rickychang.lpb.board.GameBoard
 
-// TODO: Abstract lots of this code to a super class that can be reused by
+// TODO: Abstract lots of this code to a super class that can be reused
+// TODO: Add support for iphone 4 and ipad screenshots
 class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser, stateParser: TileStateParser) {
   import IPhone5BoardParser._
 

@@ -63,19 +63,7 @@ class ScratchSuite extends FunSuite {
 //  }
   //TODO: Turn this into a unit test for end-to-end board solving
   test("Scratch") {
-    val tileParser: JavaOCRCharParser = new JavaOCRCharParser
-    val img: BufferedImage = ImageIO.read(getClass.getResource("/images/test/georges.png"))
-    val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
-    val board = new GameBoard(imageParser.boardTiles)
-    println(imageParser.toString)
-    val dict = new WordDictionary
-    println("dictionary loaded.")
-    val solver = new BoardSolver(dict)
-    val moves = solver.findWords(board, 10)
-    for (m <- moves) {
-      val (word, tiles) = m
-      println("%s : %s".format(word, solver.wordScore(tiles)))
-    }
+
   }
 
   test("Config test") {

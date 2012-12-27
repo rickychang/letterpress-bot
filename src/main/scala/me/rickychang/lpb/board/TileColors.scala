@@ -10,24 +10,33 @@ object TileColors {
   val FreeColors = LightFreeColors
 
   val LightPlayerOccupiedColors = Set(new Color(120,200,245))
-  val PlayerOccupiedColors = LightPlayerOccupiedColors    
+  val DarkPlayerOccupiedColors = Set(new Color(232,108,231))
+  val PlayerOccupiedColors = LightPlayerOccupiedColors ++ DarkPlayerOccupiedColors
 
   val LightPlayerDefendedColors = Set(new Color(56,162,251))
-  val PlayerDefendedColors = LightPlayerDefendedColors
+  val DarkPlayerDefendedColors = Set(new Color(230,89,226))
+  val PlayerDefendedColors = LightPlayerDefendedColors ++ DarkPlayerDefendedColors
   
-  val LightOpponentOccupiedColors = Set(new Color(240,152,140))  
-  val OpponentOccupiedColors = LightOpponentOccupiedColors
+  val LightOpponentOccupiedColors = Set(new Color(240,152,140))
+  val DarkOpponentOccupiedColors = Set(new Color(170,140,142))
+  val OpponentOccupiedColors = LightOpponentOccupiedColors ++ DarkOpponentOccupiedColors
   
   val LightOpponentDefendedColors = Set(new Color(233,63,51))
-  val OpponentDefendedColors = LightOpponentDefendedColors
+  val DarkDefendedColors = Set(new Color(87,56,47))
+  val OpponentDefendedColors = LightOpponentDefendedColors ++ DarkDefendedColors
 
   val LightColors = LightFreeColors ++
     LightPlayerOccupiedColors ++
     LightPlayerDefendedColors ++
     LightOpponentOccupiedColors ++
     LightOpponentDefendedColors
+
+  val DarkColors = DarkPlayerOccupiedColors ++
+    DarkPlayerDefendedColors ++
+    DarkOpponentOccupiedColors ++
+    DarkDefendedColors
   
-  val AllColors = LightColors
+  val AllColors = LightColors ++ DarkColors
 
   /**
    * Compute Euclidean distance between to Color objects
