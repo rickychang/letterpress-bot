@@ -10,25 +10,11 @@ import org.scalatest.junit.JUnitRunner
 
 import javax.imageio.ImageIO
 import me.rickychang.lpb.board.TileColors
-
+//TODO: add tests for null images and non-screenshot images
 @RunWith(classOf[JUnitRunner])
 class IPhone5ParsingSuite extends FunSuite {
 
   val tileParser = new JavaOCRCharParser
-  
-  test("iPhone 5 screenshot tile extraction") {
-    try {
-      val img: BufferedImage = ImageIO.read(getClass.getResource("/images/test/iphone5-test-board1.png"))
-      val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
-      var i = 0
-      for (img <- imageParser.tileImages) {
-        i = i+1
-        ImageIO.write(img, "png", new File("out/tile_%d.png".format(i)))
-      }
-    } catch {
-      case e: Exception => e.printStackTrace()
-    }
-  }
   
   test("twitter board 1 parsing") {
     val img: BufferedImage = ImageIO.read(getClass.getResource("/images/test/iphone5-twitter-board1.jpg"))
