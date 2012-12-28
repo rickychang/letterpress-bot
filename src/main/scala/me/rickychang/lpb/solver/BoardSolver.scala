@@ -9,7 +9,8 @@ class BoardSolver(val wordDict: WordDictionary) {
     tiles.map(t => Pair(t._2.playerPotential, t._2.opponentPotential)).foldLeft((0, 0)) { (acc, v) => (acc._1 + v._1, acc._2 + v._2) }
   }
 
-  //TODO: add type aliases to package object for tile tuples
+  // TODO: Add type aliases to package object for tile tuples
+  // TODO: Improve word scoring ranking here.
   def findWords(board: GameBoard, maxWords: Int): List[(String, List[(Char, TileState, Int)])] = {
     val validWords = wordDict.wordsWithOccurrences.flatMap(w => canPlay(board, w._1, w._2))
     validWords.sortWith((e1, e2) => {
