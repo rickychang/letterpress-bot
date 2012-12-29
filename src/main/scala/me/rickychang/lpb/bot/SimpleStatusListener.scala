@@ -47,6 +47,9 @@ class SimpleStatusListener(val twitterUserId: Long, val twitterRestClient: Twitt
         log.info(postedStatus.getText)
       }
     }
+    else {
+      log.info("ignoring tweet: " + status.getText)
+    }
   }
   
   // empty methods required by UserStreamListener 
