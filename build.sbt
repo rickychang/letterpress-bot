@@ -18,7 +18,9 @@ libraryDependencies ++= Seq(
 	"org.twitter4j" % "twitter4j-core" % "3.0.3",
 	"org.twitter4j" % "twitter4j-stream" % "3.0.3",
 	"com.typesafe.akka" % "akka-actor" % "2.0.4",
-	"com.typesafe" % "config" % "1.0.0"
+	"com.typesafe" % "config" % "1.0.0",
+	"ch.qos.logback" % "logback-classic" % "1.0.9",
+	"org.eintr.loglady" % "loglady_2.9.1" % "1.0.0"
 	)
 
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource

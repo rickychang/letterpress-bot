@@ -16,11 +16,10 @@ import me.rickychang.lpb.imageparser.ParserUtil._
 class JavaOCRCharParser(trainingImagesPath: String = DefaultTrainingImagePath) extends TileCharParser {
   private val scanner: OCRScanner = new OCRScanner
   private val loader: TrainingImageLoader = new TrainingImageLoader
-  private val container: Container = new Container
   private val trainingImageMap: HashMap[Character, ArrayList[TrainingImage]] = new HashMap[Character, ArrayList[TrainingImage]]()
   for (f <- new java.io.File(getClass.getResource(trainingImagesPath).getFile()).listFiles.filter(_.getName.endsWith(".png"))) {
     val char = f.getName().split("_").head.charAt(0)
-    loader.load(container, f.getAbsolutePath(), new CharacterRange(char, char), trainingImageMap)
+    loader.load(new Container, f.getAbsolutePath(), new CharacterRange(char, char), trainingImageMap)
   }
   scanner.addTrainingImages(trainingImageMap)
 
