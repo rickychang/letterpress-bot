@@ -16,7 +16,6 @@ import twitter4j.StallWarning
 import twitter4j.UserList
 import twitter4j.DirectMessage
 import twitter4j.StatusDeletionNotice
-import org.eintr.loglady.Logging
 import twitter4j.User
 import twitter4j.Status
 import twitter4j.StatusUpdate

@@ -17,38 +17,38 @@ import twitter4j.Twitter
 import twitter4j.User
 import twitter4j.UserList
 import twitter4j.UserStreamListener
-import org.eintr.loglady.Logging
 import com.typesafe.config.ConfigFactory
+import com.weiglewilczek.slf4s.Logger
 
-class SimpleStatusListener(val twitterUserId: Long, val twitterRestClient: Twitter) extends UserStreamListener with Logging {
+class SimpleStatusListener(val twitterUserId: Long, val twitterRestClient: Twitter) extends UserStreamListener  {
   val boardSolver = new BoardSolver(new WordDictionary)
   private val conf = ConfigFactory.load
+  private val tweetLog = Logger("Tweets")
 
   def onStatus(status: Status) {
     val inReplyToUserId = status.getInReplyToUserId
     val attachedMedia = status.getMediaEntities
     val senderScreenName = status.getUser.getScreenName
-    // tweet is directed at bot
-    if (inReplyToUserId == twitterUserId && !attachedMedia.isEmpty) {
-      val statusId = status.getId
-      log.info(status.getText)
-      // TODO: test bad image URLs
-      val img = ImageIO.read(new URL(attachedMedia.head.getMediaURL))
-      if (img != null) {
-        // TODO: test invalid images
-        val imageParser = new IPhone5BoardParser(img, new JavaOCRCharParser, ColorHistogramTileStateParser)
-        val wordsToPlay = boardSolver.findWords(imageParser.gameBoard, 3).map {
-          case (w, t) => val (p, o) = boardSolver.wordScore(t); "%s (+%d,%d)".format(w, p, o)
-        }.mkString(", ")
-        // TODO: test long tweets
-        val statusUpdate = new StatusUpdate("@%s %s".format(senderScreenName, wordsToPlay))
-        statusUpdate.setInReplyToStatusId(statusId)
-        val postedStatus = twitterRestClient.updateStatus(statusUpdate)
-        log.info(postedStatus.getText)
+    val statusId = status.getId
+    if (inReplyToUserId == twitterUserId) {
+      tweetLog.info("RECV\t%d\t%s\t%s\t%s".format(statusId, senderScreenName, status.getText, !attachedMedia.isEmpty))
+      // tweet is directed at bot
+      if (!attachedMedia.isEmpty) {
+        // TODO: test bad image URLs
+        val img = ImageIO.read(new URL(attachedMedia.head.getMediaURL))
+        if (img != null) {
+          // TODO: test invalid images
+          val imageParser = new IPhone5BoardParser(img, new JavaOCRCharParser, ColorHistogramTileStateParser)
+          val wordsToPlay = boardSolver.findWords(imageParser.gameBoard, 3).map {
+            case (w, t) => val (p, o) = boardSolver.wordScore(t); "%s (+%d,%d)".format(w, p, o)
+          }.mkString(", ")
+          // TODO: test long tweets
+          val statusUpdate = new StatusUpdate("@%s %s".format(senderScreenName, wordsToPlay))
+          statusUpdate.setInReplyToStatusId(statusId)
+          val postedStatus = twitterRestClient.updateStatus(statusUpdate)
+          tweetLog.info("SENT\t%d\t%s\t%s".format(statusId, postedStatus.getInReplyToScreenName, postedStatus.getText))
+        }
       }
-    }
-    else {
-      log.info("ignoring tweet: " + status.getText)
     }
   }
   

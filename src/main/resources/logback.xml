@@ -1,0 +1,19 @@
+<configuration>
+  <appender name="TWEETSFILE" class="ch.qos.logback.core.FileAppender">
+    <file>tweets.log</file>
+    <encoder>
+      <pattern>%date\t%level\t%logger{10}\t%msg%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <logger name="Tweets" level="info">
+    <appender-ref ref="TWEETSFILE" />
+  </logger>
+  <root level="error">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
