@@ -45,12 +45,7 @@ class SimpleStatusListener(val myUserId: Long, val twitterRestClient: Twitter) e
             val wordsToPlay = boardSolver.findWords(imageParser.gameBoard, 4).map {
               case (w, t) => val (p, o) = boardSolver.wordScore(t); "%s (+%d,%d)".format(w, p, o)
             }.mkString(", ")
-            val tweetText = {
-              val fullText = "@%s %s".format(senderScreenName, wordsToPlay)
-              // truncate tweets that are too long
-              if (fullText.length <= 140) fullText
-              else fullText.substring(0, 140) + "\u2026"
-            }
+            val tweetText = BotUtil.truncateTweet("@%s %s".format(senderScreenName, wordsToPlay))
             val statusUpdate = new StatusUpdate(tweetText)
             tweetLog.info("READY\t%d\t%s".format(statusId, statusUpdate.toString))
             statusUpdate.setInReplyToStatusId(statusId)
