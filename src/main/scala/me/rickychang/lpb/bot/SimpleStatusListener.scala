@@ -52,6 +52,7 @@ class SimpleStatusListener(val myUserId: Long, val twitterRestClient: Twitter) e
               else fullText.substring(0, 140) + "\u2026"
             }
             val statusUpdate = new StatusUpdate(tweetText)
+            tweetLog.info("READY\t%d\t%s".format(statusId, statusUpdate.toString))
             statusUpdate.setInReplyToStatusId(statusId)
             val postedStatus = twitterRestClient.updateStatus(statusUpdate)
             tweetLog.info("SENT\t%d\t%s\t%s".format(statusId, postedStatus.getInReplyToScreenName, postedStatus.getText))
