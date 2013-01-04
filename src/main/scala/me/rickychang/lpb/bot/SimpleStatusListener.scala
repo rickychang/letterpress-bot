@@ -22,8 +22,8 @@ import com.weiglewilczek.slf4s.Logger
 import com.weiglewilczek.slf4s.Logging
 import javax.imageio.IIOException
 
-class SimpleStatusListener(val myUserId: Long, val twitterRestClient: Twitter) extends UserStreamListener with Logging  {
-  private val boardSolver = new BoardSolver(new WordDictionary)
+class SimpleStatusListener(val myUserId: Long, val twitterRestClient: Twitter, val boardSolver: BoardSolver) extends UserStreamListener with Logging  {
+
   private val tweetLog = Logger("Tweets")
 
   def onStatus(status: Status) {
@@ -49,8 +49,9 @@ class SimpleStatusListener(val myUserId: Long, val twitterRestClient: Twitter) e
             val statusUpdate = new StatusUpdate(tweetText)
             tweetLog.info("READY\t%d\t%s".format(statusId, statusUpdate.toString))
             statusUpdate.setInReplyToStatusId(statusId)
-            val postedStatus = twitterRestClient.updateStatus(statusUpdate)
-            tweetLog.info("SENT\t%d\t%s\t%s".format(statusId, postedStatus.getInReplyToScreenName, postedStatus.getText))
+//             Temporarily removing sending of tweets.  We know this works, don't want to send tweets during dev/testing
+//            val postedStatus = twitterRestClient.updateStatus(statusUpdate)
+//            tweetLog.info("SENT\t%d\t%s\t%s".format(statusId, postedStatus.getInReplyToScreenName, postedStatus.getText))
           }
         }
       }

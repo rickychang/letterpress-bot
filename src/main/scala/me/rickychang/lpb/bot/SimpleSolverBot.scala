@@ -1,14 +1,15 @@
 package me.rickychang.lpb.bot
 
 import com.typesafe.config.ConfigFactory
-
 import twitter4j.TwitterFactory
 import twitter4j.TwitterStreamFactory
 import twitter4j.auth.AccessToken
+import me.rickychang.lpb.solver.BoardSolver
+import me.rickychang.lpb.solver.WordDictionary
 
 object SimpleSolverBot extends App {
   val conf = ConfigFactory.load
-  val botUserId = conf.getLong("bot.userid")
+  val botUserId = conf.getString("bot.userid").toLong
   val consumerKey = conf.getString("consumer.key")
   val consumerSecret = conf.getString("consumer.secret")
   val accessToken = conf.getString("access.token")
@@ -22,7 +23,10 @@ object SimpleSolverBot extends App {
   twitterRestClient.setOAuthConsumer(consumerKey, consumerSecret)
   twitterStream.setOAuthAccessToken(oAuthAccessToken)
   twitterRestClient.setOAuthAccessToken(oAuthAccessToken)
-  twitterStream.addListener(new SimpleStatusListener(botUserId, twitterRestClient))
+
+  val boardSolver = new BoardSolver(new WordDictionary)
+
+  twitterStream.addListener(new SimpleStatusListener(botUserId, twitterRestClient, boardSolver))
   twitterStream.user()
   
 }

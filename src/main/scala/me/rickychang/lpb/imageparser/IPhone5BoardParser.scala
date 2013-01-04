@@ -11,6 +11,7 @@ import me.rickychang.lpb.board.GameBoard
 
 // TODO: Abstract lots of this code to a super class that can be reused
 // TODO: Add support for iphone 4 and ipad screenshots
+// TODO: Make this an object with methods for extracting tiles, generating board.
 class IPhone5BoardParser(sourceImage: BufferedImage, charParser: TileCharParser, stateParser: TileStateParser) {
   import IPhone5BoardParser._
 
