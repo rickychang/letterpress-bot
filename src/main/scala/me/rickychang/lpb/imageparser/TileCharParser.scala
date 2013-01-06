@@ -5,6 +5,6 @@ import java.awt.image.BufferedImage
 
 trait TileCharParser {
   
-  def extractChar(tileImage: BufferedImage): String 
+  def extractChar(tileImage: BufferedImage): Char 
   
 }

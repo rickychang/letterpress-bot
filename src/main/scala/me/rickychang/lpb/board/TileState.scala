@@ -9,6 +9,7 @@ sealed abstract class TileState(val description: String, val shortName: String, 
   override def toString: String = shortName
 }
 
+// The shortnames used are references to the default color theme, e.g. "b" for light blue, player occupied.
 case object Free extends TileState("Free", "w", 0, 1, 0)
 case object PlayerOccupied extends TileState("Player Occupied", "b", 1, 0, 0)
 case object PlayerDefended extends TileState("Player Defended", "B", 1, 0, 0)

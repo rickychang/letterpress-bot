@@ -30,8 +30,11 @@ class JavaOCRCharParser(trainingImagesPath: String = DefaultTrainingImagePath) e
   }
   scanner.addTrainingImages(trainingImageMap)
 
-  def extractChar(tileImage: BufferedImage): String = {
-    scanner.scan(tileImage, 0, 0, 0, 0, null)
+  def extractChar(tileImage: BufferedImage): Char = {
+    val charString = scanner.scan(tileImage, 0, 0, 0, 0, null)
+    if (charString == null || charString.isEmpty || charString.length != 1) 
+      throw new InvalidImageException("Invalid tile image, unable to extract single character.")
+    else charString.charAt(0)
   }
 
 }

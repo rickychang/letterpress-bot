@@ -1,9 +1,13 @@
 package me.rickychang.lpb.imageparser
 
+import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import java.io.File
+
+import scala.math.pow
+import scala.math.sqrt
 
 import javax.imageio.ImageIO
 
@@ -33,18 +37,23 @@ object ParserUtil {
     graphics2D.dispose()
     scaledImage
   }
-  
+
   /**
-   * Given an input directory and relative screenshot image filename, 
-   * extract individual tile images from screenshot and write to disk 
-   * as individual files in same directory
+   * Compute Euclidean distance between to Color objects
+   * using RGB values
    */
-  def extractTiles(path: String, sourceFile: String): Unit = {
-      val img: BufferedImage = ImageIO.read(new File("%s/%s".format(path, sourceFile)))
-      val tileParser: JavaOCRCharParser = new JavaOCRCharParser("/images/training")
-      val imageParser = new IPhone5BoardParser(img, tileParser, ColorHistogramTileStateParser)
-      for ((img,i) <- imageParser.tileImages.view.zipWithIndex) {
-        ImageIO.write(img, "png", new File("%s/tile_%d.png".format(path, i)))
-      }
+  def colorDiff(c1: Color, c2: Color): Double = {
+    val rDiff = c1.getRed - c2.getRed
+    val gDiff = c1.getGreen - c2.getGreen
+    val bDiff = c1.getBlue - c2.getBlue
+    sqrt(pow(rDiff, 2) + pow(gDiff, 2) + pow(bDiff, 2))
   }
+
+  /**
+   * Normalize color by returning most similar canonical color.
+   */
+  def normalizeColor(canonicalColors: Iterable[Color], c: Color): Color = {
+    canonicalColors.map(tileColor => (tileColor, colorDiff(c, tileColor))).minBy(_._2)._1
+  }
+
 }

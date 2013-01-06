@@ -1,31 +1,40 @@
 package me.rickychang.lpb.imageparser
 
-import java.awt.image.BufferedImage
-import me.rickychang.lpb.board.TileState
 import java.awt.Color
+import java.awt.image.BufferedImage
+import me.rickychang.lpb.board.Free
+import me.rickychang.lpb.board.OpponentDefended
+import me.rickychang.lpb.board.OpponentOccupied
+import me.rickychang.lpb.board.PlayerDefended
+import me.rickychang.lpb.board.PlayerOccupied
 import me.rickychang.lpb.board.TileColors._
-import me.rickychang.lpb.board._
+import me.rickychang.lpb.board.TileState
+import me.rickychang.lpb.imageparser.ParserUtil._
+import me.rickychang.lpb.board.BoardThemeType._
 
-// TODO add support for light and dark board themes
-trait TileStateParser {
+object TileStateParser {
 
-  val colorToStateMap: Map[Color, TileState] = {
-    def genPair(s: TileState) = (c: Color) => (c, s)
-    val colorStatePairs = FreeColors.map(genPair(Free)) ++
-      PlayerOccupiedColors.map(genPair(PlayerOccupied)) ++
-      PlayerDefendedColors.map(genPair(PlayerDefended)) ++
-      OpponentOccupiedColors.map(genPair(OpponentOccupied)) ++
-      OpponentDefendedColors.map(genPair(OpponentDefended))
-    colorStatePairs toMap
-  }
+  private val lightColorToStateMap = {
+    LightFreeColors.map(genPair(Free)) ++
+    LightPlayerOccupiedColors.map(genPair(PlayerOccupied)) ++
+    LightPlayerDefendedColors.map(genPair(PlayerDefended)) ++
+    LightOpponentOccupiedColors.map(genPair(OpponentOccupied)) ++
+    LightOpponentDefendedColors.map(genPair(OpponentDefended))
+  } toMap
   
-  /**
-   * Normalize color by returning most similar canonical tile background color.
-   */
-  def normalizeColor(c: Color): Color = {
-    AllColors.map(tileColor => (tileColor, colorDiff(c, tileColor))).minBy(_._2)._1
-  }
+  private val darkColorToStateMap = {
+   DarkFreeColors.map(genPair(Free)) ++
+   DarkPlayerOccupiedColors.map(genPair(PlayerOccupied)) ++
+   DarkPlayerDefendedColors.map(genPair(PlayerDefended)) ++
+   DarkOpponentOccupiedColors.map(genPair(OpponentOccupied)) ++
+   DarkOpponentDefendedColors.map(genPair(OpponentDefended))
+  } toMap
   
-  def extractColor(tileImage: BufferedImage): TileState 
+  private def genPair(s: TileState) = (c: Color) => (c, s)
 
+  def extractState(themeType: BoardThemeType, tileImage: BufferedImage): TileState = {
+    // TODO: clean this up using pattern matching.
+    if (themeType == Dark) darkColorToStateMap(normalizeColor(DarkColors, new ColorHistogram(tileImage).dominantColor))
+    else lightColorToStateMap(normalizeColor(LightColors, new ColorHistogram(tileImage).dominantColor))
+  }
 }

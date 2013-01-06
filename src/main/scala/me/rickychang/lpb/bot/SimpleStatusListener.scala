@@ -3,7 +3,7 @@ package me.rickychang.lpb.bot
 import java.awt.image.BufferedImage
 import java.net.URL
 import javax.imageio.ImageIO
-import me.rickychang.lpb.imageparser.ColorHistogramTileStateParser
+import me.rickychang.lpb.imageparser.TileStateParser
 import me.rickychang.lpb.imageparser.IPhone5BoardParser
 import me.rickychang.lpb.imageparser.JavaOCRCharParser
 import me.rickychang.lpb.solver.BoardSolver
@@ -21,8 +21,9 @@ import com.typesafe.config.ConfigFactory
 import com.weiglewilczek.slf4s.Logger
 import com.weiglewilczek.slf4s.Logging
 import javax.imageio.IIOException
+import me.rickychang.lpb.imageparser.IPhone5Parser
 
-class SimpleStatusListener(val myUserId: Long, val twitterRestClient: Twitter, val boardSolver: BoardSolver) extends UserStreamListener with Logging  {
+class SimpleStatusListener(myUserId: Long, twitterRestClient: Twitter, boardSolver: BoardSolver) extends UserStreamListener with Logging  {
 
   private val tweetLog = Logger("Tweets")
 
@@ -39,11 +40,12 @@ class SimpleStatusListener(val myUserId: Long, val twitterRestClient: Twitter, v
           val attachedImageURL = attachedMedia.head.getMediaURL
           val img = ImageIO.read(new URL(attachedImageURL))
           if (img != null) {
-            // TODO: test invalid images
-            val imageParser = new IPhone5BoardParser(img, new JavaOCRCharParser, ColorHistogramTileStateParser)
-            logger.debug("Image: %s, parsed board: \n%s".format(attachedImageURL, imageParser.toString))
-            val wordsToPlay = boardSolver.findWords(imageParser.gameBoard, 4).map {
-              case (w, t) => val (p, o) = boardSolver.wordScore(t); "%s (+%d,%d)".format(w, p, o)
+            //TODO: test invalid images
+            val imageParser = new IPhone5Parser(new JavaOCRCharParser)
+            val board = imageParser.getGameBoard(img)
+            logger.debug("Image: %s, parsed board: \n%s".format(attachedImageURL, board))
+            val wordsToPlay = boardSolver.findWords(board, 4).map {
+              case (w, t) => val (p, o) = boardSolver.scoreDeltas(t); "%s (+%d,%d)".format(w, p, o)
             }.mkString(", ")
             val tweetText = BotUtil.truncateTweet("@%s %s".format(senderScreenName, wordsToPlay))
             val statusUpdate = new StatusUpdate(tweetText)
