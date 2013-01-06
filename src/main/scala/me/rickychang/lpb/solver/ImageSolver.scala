@@ -2,7 +2,6 @@ package me.rickychang.lpb.solver
 
 import javax.imageio.ImageIO
 import java.io.File
-import me.rickychang.lpb.imageparser.IPhone5BoardParser
 import me.rickychang.lpb.imageparser.JavaOCRCharParser
 import me.rickychang.lpb.imageparser.TileStateParser
 import scala.collection.mutable.MutableList

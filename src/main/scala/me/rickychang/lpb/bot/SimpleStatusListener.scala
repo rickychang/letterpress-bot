@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage
 import java.net.URL
 import javax.imageio.ImageIO
 import me.rickychang.lpb.imageparser.TileStateParser
-import me.rickychang.lpb.imageparser.IPhone5BoardParser
 import me.rickychang.lpb.imageparser.JavaOCRCharParser
 import me.rickychang.lpb.solver.BoardSolver
 import me.rickychang.lpb.solver.WordDictionary

@@ -12,32 +12,36 @@ import ParserUtil.resizeImage
 import me.rickychang.lpb.board.TileState
 
 trait ScreenshotParser {
-  
+
   val charParser: TileCharParser
-  
-  val boardXOffsetRatio: Float
-  
-  val boardYStartOffsetRatio: Float
-  
-  val boardYEndOffsetRatio: Float
-  
+
+  val boardXStartPercent: Float
+
+  val boardXEndPercent: Float
+
+  val boardYStartPercent: Float
+
+  val boardYEndPercent: Float
+
   /**
    * Crop screenshot to include just board tiles
    */
   def extractBoardImage(screenshot: BufferedImage): BufferedImage = {
-    val boardXOffset = (screenshot.getWidth * boardXOffsetRatio).toInt
-    val boardYStartOffset = (screenshot.getHeight * boardYStartOffsetRatio).toInt
-    val boardYEndOffset = (screenshot.getHeight * boardYEndOffsetRatio).toInt
-    val origBoardWidth = screenshot.getWidth - 2*boardXOffset
+    val boardXStartOffset = (screenshot.getWidth * boardXStartPercent).toInt
+    val boardXEndOffset = (screenshot.getWidth * boardXEndPercent).toInt
+    val boardYStartOffset = (screenshot.getHeight * boardYStartPercent).toInt
+    val boardYEndOffset = (screenshot.getHeight * boardYEndPercent).toInt
+    val leftPadding = boardXStartOffset
+    val rightPadding = screenshot.getWidth - boardXEndOffset
     val topPadding = boardYStartOffset
     val bottomPadding = screenshot.getHeight - boardYEndOffset
+    val origBoardWidth = screenshot.getWidth - leftPadding - rightPadding
     val origBoardHeight = screenshot.getHeight - topPadding - bottomPadding
-    val finalBoardWidth = getResizedDimension(origBoardWidth)
-    val finalBoardHeight = getResizedDimension(origBoardHeight)
-    val origBoard = screenshot.getSubimage(boardXOffset, boardYStartOffset, origBoardWidth, origBoardHeight)
-    resizeImage(origBoard, finalBoardWidth, finalBoardHeight)
+    val origBoard = screenshot.getSubimage(boardXStartOffset, boardYStartOffset, origBoardWidth, origBoardHeight)
+    // resize image to make tile extraction math cleaner
+    resizeImage(origBoard, getResizedDimension(origBoardWidth), getResizedDimension(origBoardHeight))
   }
-  
+
   /**
    * Infer board theme type (Dark or Light)
    */
@@ -47,27 +51,31 @@ trait ScreenshotParser {
     if (BoardBackgroundColors.LightColors contains norm) BoardThemeType.Light
     else BoardThemeType.Dark
   }
-  
-  def getTileImages(screenshot: BufferedImage): List[BufferedImage] = {
-    val boardImage = extractBoardImage(screenshot)
-    val boardWidth = boardImage.getWidth
-    val boardHeight = boardImage.getHeight
-    val tileWidth = getTileWidthHeight(boardWidth)
-    val tileHeight = getTileWidthHeight(boardHeight)
+
+  /**
+   * Extract individual tiles as list of BufferedImage objects.  Tiles
+   * are ordered by rows, left to right.
+   */
+  def extractTileImages(screenshot: BufferedImage): List[BufferedImage] = {
+    val bImage = extractBoardImage(screenshot)
+    val bWidth = bImage.getWidth
+    val bHeight = bImage.getHeight
+    val tWidth = getTileWidthHeight(bWidth)
+    val tHeight = getTileWidthHeight(bHeight)
     val tiles = for {
-      y <- 0 until boardHeight by tileHeight
-      x <- 0 until boardWidth by tileWidth
-    } yield boardImage.getSubimage(x, y, tileWidth, tileHeight) 
+      y <- 0 until bHeight by tHeight
+      x <- 0 until bWidth by tWidth
+    } yield bImage.getSubimage(x, y, tWidth, tHeight)
     tiles.toList
   }
-  
+
   def getGameBoard(screenshot: BufferedImage): GameBoard = {
-    val tiles = getTileImages(screenshot)
+    val tiles = extractTileImages(screenshot)
     val themeType = getThemeType(screenshot)
-    val tileChars: List[Char] = tiles.map{ charParser.extractChar(_) }
-    val tileStates: List[TileState] = tiles.map{ TileStateParser.extractState(themeType, _) }
+    val tileChars: List[Char] = tiles.map { charParser.extractChar(_) }
+    val tileStates: List[TileState] = tiles.map { TileStateParser.getState(themeType, _) }
     //TODO: add factory method to companion object
     new GameBoard((tileChars, tileStates, tileChars.indices).zipped.toList)
   }
-  
+
 }

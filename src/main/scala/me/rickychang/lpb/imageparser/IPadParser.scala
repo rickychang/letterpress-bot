@@ -12,12 +12,14 @@ class IPadParser(cParser: TileCharParser) extends ScreenshotParser {
 
   val ScreenshotAspectRatio = 0.75f
 
-  val charParser = cParser  
+  val charParser = cParser
 
-  val boardXOffsetRatio = 0.12890625f  
-  
-  val boardYStartOffsetRatio = 0.345703125f
-  
-  val boardYEndOffsetRatio = 0.90234375f
+  val boardXStartPercent = 0.12890625f
+
+  val boardXEndPercent = 0.87109375f
+
+  val boardYStartPercent = 0.345703125f
+
+  val boardYEndPercent = 0.90234375f
 
 }

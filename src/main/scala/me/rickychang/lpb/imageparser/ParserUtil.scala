@@ -15,6 +15,8 @@ object ParserUtil {
 
   val TilesPerRowColumn = 5
   
+  val TilesPerBoard = 25
+  
   val DefaultTrainingImagePath = "/images/training"
   
   def getResizedDimension(origDim: Int): Int = {
@@ -55,5 +57,4 @@ object ParserUtil {
   def normalizeColor(canonicalColors: Iterable[Color], c: Color): Color = {
     canonicalColors.map(tileColor => (tileColor, colorDiff(c, tileColor))).minBy(_._2)._1
   }
-
 }

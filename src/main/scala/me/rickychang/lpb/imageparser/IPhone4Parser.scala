@@ -14,10 +14,12 @@ class IPhone4Parser(cParser: TileCharParser) extends ScreenshotParser {
  
   val charParser = cParser  
 
-  val boardXOffsetRatio = 0.0f  
+  val boardXStartPercent = 0.0f
   
-  val boardYStartOffsetRatio = 0.33333333333333f
+  val boardXEndPercent = 1.0f
   
-  val boardYEndOffsetRatio = 1.0f
+  val boardYStartPercent = 0.33333333333333f
+  
+  val boardYEndPercent = 1.0f
 
 }

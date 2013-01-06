@@ -29,12 +29,22 @@ object TileStateParser {
    DarkOpponentOccupiedColors.map(genPair(OpponentOccupied)) ++
    DarkOpponentDefendedColors.map(genPair(OpponentDefended))
   } toMap
-  
+
+  private val shortNamesToState = {
+    val states = List(Free, PlayerOccupied, PlayerDefended, OpponentOccupied, OpponentDefended)
+    states map { s => (s.shortName, s) } toMap
+  }
+
   private def genPair(s: TileState) = (c: Color) => (c, s)
 
-  def extractState(themeType: BoardThemeType, tileImage: BufferedImage): TileState = {
+  def getState(themeType: BoardThemeType, tileImage: BufferedImage): TileState = {
     // TODO: clean this up using pattern matching.
     if (themeType == Dark) darkColorToStateMap(normalizeColor(DarkColors, new ColorHistogram(tileImage).dominantColor))
     else lightColorToStateMap(normalizeColor(LightColors, new ColorHistogram(tileImage).dominantColor))
   }
+
+  def getState(shortName: Char): Option[TileState] = {
+    shortNamesToState.get(shortName)
+  }
+
 }
