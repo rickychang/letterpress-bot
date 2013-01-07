@@ -21,47 +21,67 @@ import com.weiglewilczek.slf4s.Logger
 import com.weiglewilczek.slf4s.Logging
 import javax.imageio.IIOException
 import me.rickychang.lpb.imageparser.IPhone5Parser
+import me.rickychang.lpb.imageparser.MultiDeviceParser
+import me.rickychang.lpb.imageparser.InvalidImageException
+import me.rickychang.lpb.board.InvalidTilesException
 
-class SimpleStatusListener(myUserId: Long, twitterRestClient: Twitter, boardSolver: BoardSolver) extends UserStreamListener with Logging  {
+class SimpleStatusListener(myUserId: Long, twitterRestClient: Twitter, boardSolver: BoardSolver) extends UserStreamListener with Logging {
 
-  private val tweetLog = Logger("Tweets")
+  val NumWordsToReturn = 3
+  private val tLog = Logger("Tweets")
+  private val bParser = new MultiDeviceParser(new JavaOCRCharParser)
+
 
   def onStatus(status: Status) {
     try {
-      val inReplyToUserId = status.getInReplyToUserId
-      val attachedMedia = status.getMediaEntities
-      val senderScreenName = status.getUser.getScreenName
-      val statusId = status.getId
-      // tweet is directed at bot
-      if (inReplyToUserId == myUserId) {
-        tweetLog.info("RECV\t%d\t%s\t%s\t%s".format(statusId, senderScreenName, status.getText, !attachedMedia.isEmpty))
+      if (status.getInReplyToUserId == myUserId) {
+        _logReceivedTweet(status)
+        val attachedMedia = status.getMediaEntities
         if (!attachedMedia.isEmpty) {
-          val attachedImageURL = attachedMedia.head.getMediaURL
-          val img = ImageIO.read(new URL(attachedImageURL))
-          if (img != null) {
-            //TODO: test invalid images
-            val imageParser = new IPhone5Parser(new JavaOCRCharParser)
-            val board = imageParser.getGameBoard(img)
-            logger.debug("Image: %s, parsed board: \n%s".format(attachedImageURL, board))
-            val wordsToPlay = boardSolver.findWords(board, 4).map {
-              case (w, t) => val (p, o) = boardSolver.scoreDeltas(t); "%s (+%d,%d)".format(w, p, o)
-            }.mkString(", ")
-            val tweetText = BotUtil.truncateTweet("@%s %s".format(senderScreenName, wordsToPlay))
-            val statusUpdate = new StatusUpdate(tweetText)
-            tweetLog.info("READY\t%d\t%s".format(statusId, statusUpdate.toString))
-            statusUpdate.setInReplyToStatusId(statusId)
-//             Temporarily removing sending of tweets.  We know this works, don't want to send tweets during dev/testing
-//            val postedStatus = twitterRestClient.updateStatus(statusUpdate)
-//            tweetLog.info("SENT\t%d\t%s\t%s".format(statusId, postedStatus.getInReplyToScreenName, postedStatus.getText))
-          }
+          logger.debug("Fetching image: %s".format(attachedMedia.head.getMediaURL))
+          val img = ImageIO.read(new URL(attachedMedia.head.getMediaURL))
+          val tweetText = getResponseTweetText(img, status.getUser.getScreenName)
+          val responseUpdate = new StatusUpdate(tweetText)
+          responseUpdate.setInReplyToStatusId(status.getId)
+          _logReadyTweet(responseUpdate)
+          val sentStatus = twitterRestClient.updateStatus(responseUpdate)
+          _logSentTweet(sentStatus)
         }
       }
     } catch {
+      case e @ (_ : InvalidImageException | _ : InvalidImageException) => logger.error(e.getMessage)
       case e: IIOException => logger.error("javax.imageio.IIOException: %s, %s".format(e.getMessage, e.getCause))
       case e: Exception => logger.error(e.toString + " " + e.getStackTrace().mkString("\n"))
     }
   }
-  
+
+  private def getResponseTweetText(screenshot: BufferedImage, sender: String): String = {
+    val b = bParser.parseGameBoard(screenshot)
+    val wordsToPlay = boardSolver.findWords(b, NumWordsToReturn).map {
+      case (w, t) => {
+        val (p, o) = boardSolver.scoreDeltas(t)
+        val a = if (boardSolver.isWinningWord(b, t)) "*" else ""
+        "%s%s (+%d,%d)".format(w, a, p, o)
+      }
+    }.mkString(", ")
+    BotUtil.truncateTweet("@%s %s".format(sender, wordsToPlay))
+  }
+
+  private def _logReceivedTweet(s: Status): Unit = {
+    tLog.info("RECV\t%d\t%s\t%s\t%s".format(s.getId,
+      s.getUser.getScreenName,
+      s.getText,
+      !s.getMediaEntities.isEmpty))
+  }
+
+  private def _logReadyTweet(s: StatusUpdate): Unit = {
+    tLog.info("READY\t%d\t%s".format(s.getInReplyToStatusId, s.toString))
+  }
+
+  private def _logSentTweet(s: Status): Unit = {
+    tLog.info("SENT\t%d\t%s\t%s".format(s.getInReplyToStatusId, s.getInReplyToScreenName, s.getText))
+  }
+
   // empty methods required by UserStreamListener 
   def onBlock(source: User, blockedUser: User) = {}
   def onDeletionNotice(directMessageId: Long, userId: Long) = {}

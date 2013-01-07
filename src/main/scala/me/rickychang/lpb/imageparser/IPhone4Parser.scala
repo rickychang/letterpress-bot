@@ -8,9 +8,9 @@ import ParserUtil.getTileWidthHeight
 import ParserUtil.resizeImage
 import me.rickychang.lpb.board.TileState
 
-class IPhone4Parser(cParser: TileCharParser) extends ScreenshotParser {
+class IPhone4Parser(cParser: TileCharParser) extends IOSDeviceParser {
   
-  val ScreenshotAspectRatio = 0.66666666666667f
+  val screenshotAspectRatio = 0.66666666666667f
  
   val charParser = cParser  
 

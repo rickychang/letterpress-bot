@@ -11,10 +11,12 @@ import ParserUtil.getTileWidthHeight
 import ParserUtil.resizeImage
 import me.rickychang.lpb.board.TileState
 
-trait ScreenshotParser {
+trait IOSDeviceParser extends BoardParser {
 
   val charParser: TileCharParser
 
+  val screenshotAspectRatio: Float
+  
   val boardXStartPercent: Float
 
   val boardXEndPercent: Float
@@ -69,13 +71,12 @@ trait ScreenshotParser {
     tiles.toList
   }
 
-  def getGameBoard(screenshot: BufferedImage): GameBoard = {
+  def parseGameBoard(screenshot: BufferedImage): GameBoard = {
     val tiles = extractTileImages(screenshot)
     val themeType = getThemeType(screenshot)
     val tileChars: List[Char] = tiles.map { charParser.extractChar(_) }
     val tileStates: List[TileState] = tiles.map { TileStateParser.getState(themeType, _) }
-    //TODO: add factory method to companion object
-    new GameBoard((tileChars, tileStates, tileChars.indices).zipped.toList)
+    GameBoard((tileChars, tileStates, tileChars.indices).zipped.toList)
   }
 
 }

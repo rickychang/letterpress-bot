@@ -6,6 +6,7 @@ import me.rickychang.lpb.imageparser.JavaOCRCharParser
 import me.rickychang.lpb.imageparser.TileStateParser
 import scala.collection.mutable.MutableList
 import me.rickychang.lpb.imageparser.IPhone5Parser
+import me.rickychang.lpb.imageparser.MultiDeviceParser
 
 /**
  * Utility object for testing solver against local images
@@ -17,8 +18,8 @@ object ImageSolver {
   
   def findWords(imageFilePath: String, maxWords: Int): List[String] = {
     val boardImage = ImageIO.read(new File(imageFilePath))
-    val imageParser = new IPhone5Parser(tileParser)
-    val wordsToPlay = boardSolver.findWords(imageParser.getGameBoard(boardImage), maxWords).map { 
+    val imageParser = new MultiDeviceParser(tileParser)
+    val wordsToPlay = boardSolver.findWords(imageParser.parseGameBoard(boardImage), maxWords).map { 
       case (w, t) => val (p, o) = boardSolver.scoreDeltas(t); "%s : +%d,%d".format(w, p, o) }
     wordsToPlay
   }
