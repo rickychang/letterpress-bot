@@ -14,8 +14,6 @@ class MultiDeviceParser(cParser: TileCharParser) extends BoardParser {
 
   /**
    * Find most appropriate device-specific parser for a given image.
-   *
-   *
    */
   private def getParser(screenshot: BufferedImage): Option[BoardParser] = {
     val aRatio = screenshot.getWidth.toFloat / screenshot.getHeight.toFloat
@@ -58,6 +56,4 @@ class MultiDeviceParser(cParser: TileCharParser) extends BoardParser {
         throw new InvalidImageException("Unable to find valid parser for image aspect ratio")
     }
   }
-
 }
-

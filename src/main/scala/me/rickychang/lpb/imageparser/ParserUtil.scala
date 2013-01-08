@@ -57,4 +57,13 @@ object ParserUtil {
   def normalizeColor(canonicalColors: Iterable[Color], c: Color): Color = {
     canonicalColors.map(tileColor => (tileColor, colorDiff(c, tileColor))).minBy(_._2)._1
   }
+
+  def extractTiles(outputPath: String, sourceFile: String): Unit = {
+    val img: BufferedImage = ImageIO.read(new File(sourceFile))
+    val imageParser = new MultiDeviceParser(new JavaOCRCharParser)
+    for ((img, i) <- imageParser.extractTileImages(img).view.zipWithIndex) {
+      ImageIO.write(img, "png", new File("%s/tile_%d.png".format(outputPath, i)))
+    }
+  }
+
 }
