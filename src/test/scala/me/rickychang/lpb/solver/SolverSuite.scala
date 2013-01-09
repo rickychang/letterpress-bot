@@ -8,6 +8,12 @@ import java.io.File
 import me.rickychang.lpb.imageparser.JavaOCRCharParser
 import me.rickychang.lpb.imageparser.MultiDeviceParser
 import me.rickychang.lpb.board.GameBoard
+import me.rickychang.lpb.board.OpponentDefended
+import me.rickychang.lpb.board.PlayerDefended
+import me.rickychang.lpb.board.OpponentOccupied
+import me.rickychang.lpb.board.PlayerOccupied
+import me.rickychang.lpb.board.Free
+import me.rickychang.lpb.board.GreedyStrategyOrdering
 
 @RunWith(classOf[JUnitRunner])
 class SolverSuite extends FunSuite {
@@ -21,6 +27,7 @@ class SolverSuite extends FunSuite {
     val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
+    println(boardSolver.findWords(gameBoard, 5))
     assert(wordsToPlay == List(("ATTACHMENT", (5, -4)),
       ("ATTACHMENTS", (5, -4)),
       ("PENCHANT", (5, -4)),
@@ -78,6 +85,14 @@ class SolverSuite extends FunSuite {
       }
     }.mkString(", ")
     assert(wordsToPlay == "BAT* (+3,-2), BETTER (+6,-6), BEE (+3,-3)")
+  }
+  
+  test("TileState ordering") {
+    val stateList = List(OpponentDefended, Free, OpponentOccupied, PlayerOccupied,PlayerDefended)
+    assert(stateList.sortWith(GreedyStrategyOrdering.gt(_, _)) == 
+      List(Free, OpponentOccupied, PlayerOccupied, PlayerDefended, OpponentDefended))
+    assert(List(OpponentDefended, Free, OpponentOccupied, PlayerOccupied, Free).sortWith(GreedyStrategyOrdering.gt(_, _)) ==
+      List(Free, Free, OpponentOccupied, PlayerOccupied, OpponentDefended))
   }
 
 }

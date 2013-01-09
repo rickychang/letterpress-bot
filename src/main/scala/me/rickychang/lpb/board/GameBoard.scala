@@ -13,7 +13,7 @@ class GameBoard(val tiles: List[BoardTile]) {
 
   private val letterToTiles: Map[Char, List[BoardTile]] =
     tiles.groupBy((c => c._1)).mapValues {
-      _.sortWith((e1, e2) => e1._2.playerPotential > e2._2.playerPotential)
+      _.sortWith((t1, t2) => GreedyStrategyOrdering.gt(t1._2, t2._2))
     }
 
   val playerOccupiedTiles = tiles collect { case t @ (_, PlayerOccupied, _) => t }
