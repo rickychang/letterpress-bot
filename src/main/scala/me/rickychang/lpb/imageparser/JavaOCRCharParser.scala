@@ -17,9 +17,10 @@ class JavaOCRCharParser(trainingImagesPath: String = DefaultTrainingImagePath) e
   // TODO: move this into a configuration file
   private val trainingImageFileNames = for {
     l <- ('A' to 'Z')
-    s <- List("_d.png", "_w.png")
+    s <- List("_d_128.png", "_w_128.png", "_d_228.png", "_w_228.png")
   } yield { (l, "%s/%s%s".format(trainingImagesPath, l, s)) }
 
+  private val TrainingTileDimension = 128
 
   private val scanner: OCRScanner = new OCRScanner
   private val loader: TrainingImageLoader = new TrainingImageLoader
@@ -32,7 +33,7 @@ class JavaOCRCharParser(trainingImagesPath: String = DefaultTrainingImagePath) e
 
   def extractChar(tileImage: BufferedImage): Char = {
     val charString = scanner.scan(tileImage, 0, 0, 0, 0, null)
-    if (charString == null || charString.isEmpty || charString.length != 1) 
+    if (charString == null || charString.isEmpty || charString.length != 1)
       throw new InvalidImageException("Invalid tile image, unable to extract single character.")
     else charString.charAt(0)
   }

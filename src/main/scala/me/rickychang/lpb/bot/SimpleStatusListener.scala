@@ -31,7 +31,6 @@ class SimpleStatusListener(myUserId: Long, twitterRestClient: Twitter, boardSolv
   private val tLog = Logger("Tweets")
   private val bParser = new MultiDeviceParser(new JavaOCRCharParser)
 
-
   def onStatus(status: Status) {
     try {
       if (status.getInReplyToUserId == myUserId) {
@@ -41,30 +40,31 @@ class SimpleStatusListener(myUserId: Long, twitterRestClient: Twitter, boardSolv
           logger.debug("Fetching image: %s".format(attachedMedia.head.getMediaURL))
           val img = ImageIO.read(new URL(attachedMedia.head.getMediaURL))
           val tweetText = getResponseTweetText(img, status.getUser.getScreenName)
-          val responseUpdate = new StatusUpdate(tweetText)
-          responseUpdate.setInReplyToStatusId(status.getId)
-          _logReadyTweet(responseUpdate)
-          val sentStatus = twitterRestClient.updateStatus(responseUpdate)
-          _logSentTweet(sentStatus)
+          if (tweetText.isDefined) {
+            val responseUpdate = new StatusUpdate(tweetText.get)
+            responseUpdate.setInReplyToStatusId(status.getId)
+            _logReadyTweet(responseUpdate)
+            val sentStatus = twitterRestClient.updateStatus(responseUpdate)
+            _logSentTweet(sentStatus)
+          } else {
+            throw new InvalidImageException("Unable to find playble words for corresponding board: %s".format(status.getText))
+          }
         }
       }
     } catch {
-      case e @ (_ : InvalidImageException | _ : InvalidImageException) => logger.error(e.getMessage)
+      case e @ (_: InvalidImageException | _: InvalidImageException) => logger.error(e.getMessage)
       case e: IIOException => logger.error("javax.imageio.IIOException: %s, %s".format(e.getMessage, e.getCause))
       case e: Exception => logger.error(e.toString + " " + e.getStackTrace().mkString("\n"))
     }
   }
 
-  private def getResponseTweetText(screenshot: BufferedImage, sender: String): String = {
+  private def getResponseTweetText(screenshot: BufferedImage, sender: String): Option[String] = {
     val b = bParser.parseGameBoard(screenshot)
-    val wordsToPlay = boardSolver.findWords(b, NumWordsToReturn).map {
-      case (w, t) => {
-        val (p, o) = boardSolver.scoreDeltas(t)
-        val a = if (boardSolver.isWinningWord(b, t)) "*" else ""
-        "%s%s (+%d,%d)".format(w, a, p, o)
-      }
-    }.mkString(", ")
-    BotUtil.truncateTweet("@%s %s".format(sender, wordsToPlay))
+    boardSolver.findWords(b, NumWordsToReturn) match {
+      case Some(words) => Some(BotUtil.truncateTweet("@%s %s".format(sender, words)))
+      case _ => None
+    }
+
   }
 
   private def _logReceivedTweet(s: Status): Unit = {

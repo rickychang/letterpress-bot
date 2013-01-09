@@ -83,23 +83,35 @@ class IPhone5ParsingSuite extends FunSuite {
     assert(iPadParser.parseGameBoard(img) == expected)
   }
 
+  test("iPad parser test 2") {
+    val img = ImageIO.read(getClass.getResource("/images/test/ipad-test-board3.png"))
+    val expected = GameBoard("Cw Qw Tw Ir Ow Dr Mw Xw Hw Ew Nw Ww Aw Er Jr Ow Ew Pw Zw Aw Mw Fw Kw Kr Nr")
+    assert(iPadParser.parseGameBoard(img) == expected)
+  }
+
+  test("iPad parser test 3") {
+    val img = ImageIO.read(getClass.getResource("/images/test/ipad-test-board4.png"))
+    val expected = GameBoard("Qw Vw Uw Ww Gw Gw Wr Fw Ew Gw Nr Cw Ar Lw Gw Iw Ww Xw Uw Uw Iw Yr Tw Mw Dw")
+    assert(iPadParser.parseGameBoard(img) == expected)
+  }
+
+  test("iPad parser test 4") {
+    val img = ImageIO.read(getClass.getResource("/images/test/ipad-test-board5.png"))
+    val expected = GameBoard("Jw Pw Jw Tw Zw Bw Fr Sr Ir Iw Fr Dw Uw Nr Tw Hw Ur Gw Gw Vw Mr Zw Zw Aw Ow")
+    assert(iPadParser.parseGameBoard(img) == expected)
+  }
+
   test("iPhone 4 test 1") {
     val img = ImageIO.read(getClass.getResource("/images/test/iphone4-test-board1.png"))
     val expected = GameBoard("Ar IR Lr Pr Db Gw Or Fw Mr Yr Sr Tr Gw Zr Zr Db Xw Hr Dw Zw Xw Hr Ww Vw Rw")
     assert(iPhone4Parser.parseGameBoard(img) == expected)
   }
-  
+
   test("Multi-device board equality") {
     val img = ImageIO.read(getClass.getResource("/images/test/ipad-test-board2.png"))
     val b = multiDeviceParser.parseGameBoard(img)
-    println(b.toString)
     val img2 = ImageIO.read(getClass.getResource("/images/test/iphone5-test-board13-dark1.png"))
     val b2 = multiDeviceParser.parseGameBoard(img2)
-    println(b2)
-    
-    println(b.tiles)
-    println(b2.tiles)
-    assert(b.toString == b2.toString)
     assert(b == b2)
   }
 

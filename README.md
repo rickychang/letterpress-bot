@@ -1,4 +1,4 @@
 letterpress-bot
 ==============
 
-Eventually this will be a letterpress bot written in Scala.
+Letterpress solver bot written in Scala.

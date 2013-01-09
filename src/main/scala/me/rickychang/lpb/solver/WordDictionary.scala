@@ -9,7 +9,7 @@ import me.rickychang.lpb.solver.SolverUtil._
 
 class WordDictionary(inputWordFile: String = DefaultWordDict) {
   
-  val wordsWithOccurrences: Seq[(String, Occurrences)] = {
-    Source.fromURL(getClass.getResource(inputWordFile)).getLines.map(w => (w, wordOccurrences(w))).toStream
+  val wordHistograms: Seq[(String, LetterHistogram)] = {
+    Source.fromURL(getClass.getResource(inputWordFile)).getLines.map(w => (w, wordHistogram(w))).toStream
   }
 }

@@ -18,7 +18,7 @@ class SolverSuite extends FunSuite {
   test("iPhone 5 Solver test board 1") {
     val boardImage = ImageIO.read(getClass.getResource("/images/test/iphone5-test-board1.png"))
     val gameBoard = parser.parseGameBoard(boardImage)
-    val wordsToPlay = boardSolver.findWords(gameBoard, 5).map {
+    val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
     assert(wordsToPlay == List(("ATTACHMENT", (5, -4)),
@@ -31,7 +31,7 @@ class SolverSuite extends FunSuite {
   test("iPhone 5 Solver test board 2") {
     val boardImage = ImageIO.read(getClass.getResource("/images/test/iphone5-test-board2.png"))
     val gameBoard = parser.parseGameBoard(boardImage)
-    val wordsToPlay = boardSolver.findWords(gameBoard, 5).map {
+    val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
     assert(wordsToPlay == List(("UNSTEADYING", (11, -5)),
@@ -44,7 +44,7 @@ class SolverSuite extends FunSuite {
   test("iPhone 5 Solver test board 3") {
     val boardImage = ImageIO.read(getClass.getResource("/images/test/iphone5-test-board3.png"))
     val gameBoard = parser.parseGameBoard(boardImage)
-    val wordsToPlay = boardSolver.findWords(gameBoard, 5).map {
+    val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
     assert(wordsToPlay == List(("BETTER", (6, 0)),
@@ -57,7 +57,7 @@ class SolverSuite extends FunSuite {
   test("iPhone 5 Solver twitter board 1") {
     val boardImage = ImageIO.read(getClass.getResource("/images/test/iphone5-twitter-board1.jpg"))
     val gameBoard = parser.parseGameBoard(boardImage)
-    val wordsToPlay = boardSolver.findWords(gameBoard, 5).map {
+    val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
     assert(wordsToPlay == List(("WALLYDRAGS", (9, -8)),
@@ -69,11 +69,11 @@ class SolverSuite extends FunSuite {
 
   test("Winning word rankings") {
     val b = GameBoard("AB AB AB AB AB AB AB AB AB AB AB AB AB AB AB AB AB AB Aw Er Br Er Tr Tr Rr")
-    val wordsAndTiles = boardSolver.findWords(b, 5)
+    val wordsAndTiles = boardSolver.findMoves(b, 5)
     val wordsToPlay = wordsAndTiles.map {
       case (w, t) => {
         val (p, o) = boardSolver.scoreDeltas(t)
-        val a = if (boardSolver.isWinningWord(b, t)) "*" else ""
+        val a = if (boardSolver.isWinningMove(b, t)) "*" else ""
         "%s%s (+%d,%d)".format(w, a, p, o)
       }
     }.mkString(", ")

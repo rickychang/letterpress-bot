@@ -19,7 +19,7 @@ object ImageSolver {
   def findWords(imageFilePath: String, maxWords: Int): List[String] = {
     val boardImage = ImageIO.read(new File(imageFilePath))
     val imageParser = new MultiDeviceParser(tileParser)
-    val wordsToPlay = boardSolver.findWords(imageParser.parseGameBoard(boardImage), maxWords).map { 
+    val wordsToPlay = boardSolver.findMoves(imageParser.parseGameBoard(boardImage), maxWords).map { 
       case (w, t) => val (p, o) = boardSolver.scoreDeltas(t); "%s : +%d,%d".format(w, p, o) }
     wordsToPlay
   }

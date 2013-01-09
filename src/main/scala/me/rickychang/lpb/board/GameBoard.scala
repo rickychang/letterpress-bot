@@ -8,9 +8,13 @@ import me.rickychang.lpb.imageparser.TileStateParser
 
 class GameBoard(val tiles: List[BoardTile]) {
 
-  require(tiles.length == TilesPerBoard, "Expected %d tiles, found %d".format(TilesPerBoard, tiles.length))
+  require(tiles.length == TilesPerBoard,
+		  "Expected %d tiles, found %d".format(TilesPerBoard, tiles.length))
 
-  private val letterToTiles: Map[Char, List[BoardTile]] = tiles.groupBy((c => c._1)).mapValues(_.sortWith((e1, e2) => e1._2.playerPotential > e2._2.playerPotential))
+  private val letterToTiles: Map[Char, List[BoardTile]] =
+    tiles.groupBy((c => c._1)).mapValues {
+      _.sortWith((e1, e2) => e1._2.playerPotential > e2._2.playerPotential)
+    }
 
   val playerOccupiedTiles = tiles collect { case t @ (_, PlayerOccupied, _) => t }
   val playerDefendedTiles = tiles collect { case t @ (_, PlayerDefended, _) => t }
