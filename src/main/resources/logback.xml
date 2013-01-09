@@ -13,7 +13,7 @@
   <logger name="Tweets" level="info">
     <appender-ref ref="TWEETSFILE" />
   </logger>
-  <root level="debug">
+  <root level="error">
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>
