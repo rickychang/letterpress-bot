@@ -8,10 +8,16 @@ import java.io.File
 import me.rickychang.lpb.imageparser.JavaOCRCharParser
 import me.rickychang.lpb.imageparser.MultiDeviceParser
 import me.rickychang.lpb.board.GameBoard
+import me.rickychang.lpb.board.OpponentDefended
+import me.rickychang.lpb.board.PlayerDefended
+import me.rickychang.lpb.board.OpponentOccupied
+import me.rickychang.lpb.board.PlayerOccupied
+import me.rickychang.lpb.board.Free
+import me.rickychang.lpb.board.GreedyStrategyOrdering
 
 @RunWith(classOf[JUnitRunner])
 class SolverSuite extends FunSuite {
-  
+
   private val boardSolver = new BoardSolver(new WordDictionary("/dicts/testDict.txt"))
   private val parser = new MultiDeviceParser(new JavaOCRCharParser)
 
@@ -21,11 +27,11 @@ class SolverSuite extends FunSuite {
     val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
-    assert(wordsToPlay == List(("ATTACHMENT", (5, -4)),
-      ("ATTACHMENTS", (5, -4)),
-      ("PENCHANT", (5, -4)),
-      ("PENCHANTS", (5, -4)),
-      ("PHANTAST", (5, -4))))
+    assert(wordsToPlay == List(("ATTACHMENT", (5, -3)),
+      ("ATTACHMENTS", (5, -3)),
+      ("PENCHANT", (5, -2)),
+      ("PENCHANTS", (5, -2)),
+      ("PHANTAST", (5, -2))))
   }
 
   test("iPhone 5 Solver test board 2") {
@@ -34,11 +40,11 @@ class SolverSuite extends FunSuite {
     val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
-    assert(wordsToPlay == List(("UNSTEADYING", (11, -5)),
-      ("MAGNITUDES", (10, -5)),
+    assert(wordsToPlay == List(("UNSTEADYING", (11, -4)),
       ("NUTMEGGING", (10, -5)),
-      ("UNDEAFING", (9, -6)),
-      ("ANGUISHED", (9, -5))))
+      ("UNDEAFING", (9, -5)),
+      ("MAGNITUDES", (10, -3)),
+      ("ANGUISHED", (9, -3))))
   }
 
   test("iPhone 5 Solver test board 3") {
@@ -60,10 +66,10 @@ class SolverSuite extends FunSuite {
     val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
-    assert(wordsToPlay == List(("WALLYDRAGS", (9, -8)),
-      ("GLASSWORK", (8, -8)),
+    assert(wordsToPlay == List(("WALLYDRAGS", (9, -7)),
       ("KARYOPLASMS", (8, -8)),
       ("VOLKSRAADS", (9, -7)),
+      ("GLASSWORK", (8, -7)),
       ("GALLOWGLASS", (8, -7))))
   }
 
@@ -78,6 +84,14 @@ class SolverSuite extends FunSuite {
       }
     }.mkString(", ")
     assert(wordsToPlay == "BAT* (+3,-2), BETTER (+6,-6), BEE (+3,-3)")
+  }
+
+  test("TileState ordering") {
+    val stateList = List(OpponentDefended, Free, OpponentOccupied, PlayerOccupied, PlayerDefended)
+    assert(stateList.sortWith(GreedyStrategyOrdering.gt(_, _)) ==
+      List(Free, OpponentOccupied, PlayerOccupied, PlayerDefended, OpponentDefended))
+    assert(List(OpponentDefended, Free, OpponentOccupied, PlayerOccupied, Free).sortWith(GreedyStrategyOrdering.gt(_, _)) ==
+      List(Free, Free, OpponentOccupied, PlayerOccupied, OpponentDefended))
   }
 
 }

@@ -75,7 +75,7 @@ class SimpleStatusListener(myUserId: Long, twitterRestClient: Twitter, boardSolv
   }
 
   private def _logReadyTweet(s: StatusUpdate): Unit = {
-    tLog.info("READY\t%d\t%s".format(s.getInReplyToStatusId, s.toString))
+    tLog.info("READY\t%d\t%s".format(s.getInReplyToStatusId, s.getStatus))
   }
 
   private def _logSentTweet(s: Status): Unit = {
