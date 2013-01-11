@@ -18,5 +18,5 @@ Send tweets containing game screenshots to [@letterpressbot](https://twitter.com
 ## Limitations
 * No support for previously played words
 * Current word ranking function is very simple
-  * For every playable word, we only consider only one set of tiles to play that word
+  * For every playable word, only consider one set of tiles to play that word
   * Selected set of tiles is greedily choosen to maximize free tiles claimed
