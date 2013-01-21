@@ -14,7 +14,7 @@ import java.awt.Color
 class ColorHistogram(image: BufferedImage) {
 
   val histogramMap = {
-    val intPixels = image.getData(new Rectangle(image.getWidth, image.getHeight)).getDataBuffer().asInstanceOf[DataBufferInt].getData()
+    val intPixels: Array[Int] = image.getData.getPixels(0, 0, image.getWidth, image.getHeight, null)
     intPixels.groupBy(identity).mapValues(_.size)
   }
 
