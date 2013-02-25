@@ -10,7 +10,9 @@ scalaVersion := "2.9.2"
 
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 
-resolvers += "releases" at "https://oss.sonatype.org/content/repositories/releases/"
+resolvers += "sonatype releases" at "https://oss.sonatype.org/content/repositories/releases/"
+
+resolvers += "imagej releases" at "http://maven.imagej.net/content/repositories/releases/"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
@@ -23,7 +25,8 @@ libraryDependencies ++= Seq(
 	"com.typesafe" % "config" % "1.0.0",
 	"ch.qos.logback" % "logback-classic" % "1.0.9",
 	"com.weiglewilczek.slf4s" % "slf4s_2.9.1" % "1.0.7",
-	"com.mongodb.casbah" % "casbah_2.9.1" % "2.1.5-1"
+	"com.mongodb.casbah" % "casbah_2.9.1" % "2.1.5-1",
+	"net.imagej" % "ij" % "1.47i"
 	)
 
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
