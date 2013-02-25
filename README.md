@@ -20,3 +20,10 @@ Send tweets containing game screenshots to [@letterpressbot](https://twitter.com
 * Current word ranking function is very simple
   * For every playable word, only consider one set of tiles to play that word
   * Selected set of tiles is greedily choosen to maximize free tiles claimed
+
+## Starting bot
+
+Run something like this: 
+`java -Xms512m -Xmx900m -Djava.awt.headless=true -jar target/LetterpressBot-assembly-0.1.jar`
+
+*Note* you have to add your own Twitter account auth keys to `src/application.conf`
