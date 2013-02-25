@@ -24,6 +24,6 @@ Send tweets containing game screenshots to [@letterpressbot](https://twitter.com
 ## Starting bot
 
 Run something like this: 
-`java -Xms512m -Xmx900m -Djava.awt.headless=true -jar target/LetterpressBot-assembly-0.1.jar`
+`java -Xms512m -Xmx900m -Djava.awt.headless=true -jar target/LetterpressBot-assembly-1.0.jar`
 
-*Note* you have to add your own Twitter account auth keys to `src/application.conf`
+**Note** you have to add your own Twitter account auth keys to `src/application.conf`
