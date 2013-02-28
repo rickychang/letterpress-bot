@@ -39,8 +39,14 @@ object TileStateParser {
 
   def getState(themeType: BoardThemeType, tileImage: BufferedImage): TileState = {
     // TODO: clean this up using pattern matching.
-    if (themeType == Dark) darkColorToStateMap(normalizeColor(DarkColors, new ColorHistogram(tileImage).dominantColor))
-    else lightColorToStateMap(normalizeColor(LightColors, new ColorHistogram(tileImage).dominantColor))
+    if (themeType == Dark) {
+      val hist = new ColorHistogram(tileImage)
+      darkColorToStateMap(normalizeColor(DarkColors, hist.dominantColor))
+    }
+    else {
+      val hist = new ColorHistogram(tileImage)
+      lightColorToStateMap(normalizeColor(LightColors, hist.dominantColor))
+    }
   }
 
   def getState(shortName: Char): Option[TileState] = {

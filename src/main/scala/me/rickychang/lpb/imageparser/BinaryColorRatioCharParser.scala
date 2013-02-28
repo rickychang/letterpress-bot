@@ -5,6 +5,7 @@ import ParserUtil.cosineSimilarity
 import ParserUtil.DefaultTrainingImagePath
 import javax.imageio.ImageIO
 import ij.IJ
+import java.awt.Color
 
 class BinaryColorRatioCharParser(trainingImagesPath: String = DefaultTrainingImagePath) extends TileCharParser {
 
@@ -20,7 +21,7 @@ class BinaryColorRatioCharParser(trainingImagesPath: String = DefaultTrainingIma
       val tileImg = ImageIO.read(getClass.getResource(f))
       (getFeatureVector(tileImg), c)
   }.toList
-
+  
   def getFeatureVector(tileImage: BufferedImage): Vector[Float] = {
     val cropped = ParserUtil.convertToBinaryImage(tileImage)
     val tWidth = (cropped.getWidth + NumRegionRowColumns - 1) / NumRegionRowColumns * NumRegionRowColumns
@@ -36,8 +37,8 @@ class BinaryColorRatioCharParser(trainingImagesPath: String = DefaultTrainingIma
     }
     val regionBlkPercents = regions.map { img =>
       val histogramMap = new ColorHistogram(img).histogramMap
-      val blackCount = histogramMap.getOrElse(0, 0)
-      val whiteCount = histogramMap.getOrElse(255, 0)
+      val blackCount = histogramMap.getOrElse(Color.BLACK, 0)
+      val whiteCount = histogramMap.getOrElse(Color.WHITE, 0)
       blackCount.toFloat / (whiteCount.toFloat + blackCount.toFloat)
     }
     val featureVector = Vector[Float]() ++ regionBlkPercents
