@@ -1,9 +1,10 @@
 package me.rickychang.lpb.imageparser
 
 import java.awt.image.BufferedImage
+import ParserUtil.cosineSimilarity
+import ParserUtil.DefaultTrainingImagePath
 import javax.imageio.ImageIO
-import java.io.File
-import ParserUtil._
+import ij.IJ
 
 class BinaryColorRatioCharParser(trainingImagesPath: String = DefaultTrainingImagePath) extends TileCharParser {
 
@@ -21,7 +22,7 @@ class BinaryColorRatioCharParser(trainingImagesPath: String = DefaultTrainingIma
   }.toList
 
   def getFeatureVector(tileImage: BufferedImage): Vector[Float] = {
-    val cropped = ParserUtil.getBinaryCroppedTile(tileImage)
+    val cropped = ParserUtil.convertToBinaryImage(tileImage)
     val tWidth = (cropped.getWidth + NumRegionRowColumns - 1) / NumRegionRowColumns * NumRegionRowColumns
     val tHeight = (cropped.getHeight + NumRegionRowColumns - 1) / NumRegionRowColumns * NumRegionRowColumns
     val resized = ParserUtil.resizeImage(cropped, tWidth, tHeight)
@@ -35,8 +36,8 @@ class BinaryColorRatioCharParser(trainingImagesPath: String = DefaultTrainingIma
     }
     val regionBlkPercents = regions.map { img =>
       val histogramMap = new ColorHistogram(img).histogramMap
-      val blackCount = histogramMap.getOrElse(BlackInt, 0)
-      val whiteCount = histogramMap.getOrElse(WhiteInt, 0)
+      val blackCount = histogramMap.getOrElse(0, 0)
+      val whiteCount = histogramMap.getOrElse(255, 0)
       blackCount.toFloat / (whiteCount.toFloat + blackCount.toFloat)
     }
     val featureVector = Vector[Float]() ++ regionBlkPercents

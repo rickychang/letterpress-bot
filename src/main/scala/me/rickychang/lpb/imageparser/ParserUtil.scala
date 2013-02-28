@@ -12,6 +12,8 @@ import java.awt.image.ColorConvertOp
 import java.awt.color.ColorSpace
 import java.awt.image.LookupOp
 import java.awt.image.ShortLookupTable
+import ij.ImagePlus
+import ij.IJ
 
 object ParserUtil {
 
@@ -23,11 +25,8 @@ object ParserUtil {
 
   val Black = new Color(0, 0, 0)
 
-  val BlackInt = 0
-
   val White = new Color(255, 255, 255)
 
-  val WhiteInt = 16777215
 
   val CropThreshold = 7
 
@@ -77,14 +76,9 @@ object ParserUtil {
   }
 
   def convertToBinaryImage(orig: BufferedImage): BufferedImage = {
-    val grayImage = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null).filter(orig, null)
-    val rawBinaryImage = new BufferedImage(grayImage.getWidth, grayImage.getHeight, BufferedImage.TYPE_BYTE_BINARY)
-    val finalImg = new BufferedImage(orig.getWidth, orig.getHeight, BufferedImage.TYPE_INT_RGB)
-    val graphics2D: Graphics2D = rawBinaryImage.getGraphics.asInstanceOf[Graphics2D]
-    graphics2D.drawImage(grayImage, 0, 0, null)
-    graphics2D.dispose()
-    new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_sRGB), null).filter(rawBinaryImage, finalImg)
-    finalImg
+    val imgPlus = new ImagePlus("", orig)
+    IJ.run(imgPlus, "Convert to Mask", "")
+    imgPlus.getBufferedImage
   }
 
   def invertColors(orig: BufferedImage): BufferedImage = {
