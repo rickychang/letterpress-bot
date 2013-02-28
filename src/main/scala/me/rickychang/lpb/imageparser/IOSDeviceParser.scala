@@ -74,6 +74,7 @@ trait IOSDeviceParser extends BoardParser {
   def parseGameBoard(screenshot: BufferedImage): GameBoard = {
     val tiles = extractTileImages(screenshot)
     val themeType = getThemeType(screenshot)
+    println(themeType)
     val tileChars: List[Char] = tiles.map { charParser.extractChar(_) }
     val tileStates: List[TileState] = tiles.map { TileStateParser.getState(themeType, _) }
     GameBoard((tileChars, tileStates, tileChars.indices).zipped.toList)
