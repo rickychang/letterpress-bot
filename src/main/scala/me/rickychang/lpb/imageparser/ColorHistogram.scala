@@ -14,12 +14,22 @@ import java.awt.Color
 class ColorHistogram(image: BufferedImage) {
 
   val histogramMap = {
-    val intPixels = image.getData(new Rectangle(image.getWidth, image.getHeight)).getDataBuffer().asInstanceOf[DataBufferInt].getData()
-    intPixels.groupBy(identity).mapValues(_.size)
+    val pixels = for {
+      y <- 0 until image.getHeight
+      x <- 0 until image.getWidth 
+    } yield new Color(image.getRGB(x, y))
+    pixels.groupBy(identity).mapValues(_.size)
+  }
+  
+  private def getARGBPixelColor(pixel: Int): Color = {
+    val a: Int = (pixel >> 24) & 0xff
+    val r: Int = (pixel >> 16) & 0xff
+    val g: Int = (pixel >> 8) & 0xff
+    val b: Int = (pixel) & 0xff
+    new Color(r, g, b, a)
   }
 
   val sortedHistogram = histogramMap.toList.sortWith { (e1, e2) => (e1._2 > e2._2) }
-    .map { case (intPixel, count) => (new Color(intPixel), count) }
 
   val dominantColor = sortedHistogram.head._1
 
