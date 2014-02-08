@@ -87,41 +87,6 @@ object ParserUtil {
     inverted
   }
 
-  def getBinaryCroppedTile(tileImage: BufferedImage): BufferedImage = {
-    var bTile = convertToBinaryImage(tileImage)
-    val domColor = new ColorHistogram(bTile).dominantColor
-    if (domColor == Black) invertColors(bTile) else bTile
-    //    cropLetter(bTile)
-  }
-
-  def cropLetter(binaryTile: BufferedImage): BufferedImage = {
-    var topPadding, bottomPadding, leftPadding, rightPadding = -1
-    val raster = binaryTile.getData()
-    for (row <- 0 until binaryTile.getHeight) {
-      val rowArray: Array[Int] = raster.getPixels(0, row, binaryTile.getWidth, 1, null)
-      val histogram = rowArray.groupBy(identity).mapValues(_.size).toList.sortWith { (e1, e2) => (e1._2 > e2._2) }
-      if (topPadding == -1 && histogram.length >= 2 && histogram(1)._2 > CropThreshold) {
-        topPadding = row
-      }
-      if (bottomPadding == -1 && topPadding != -1 &&
-        (histogram.length == 1 || histogram(1)._2 <= CropThreshold)) {
-        bottomPadding = row
-      }
-    }
-    for (col <- 0 until binaryTile.getWidth) {
-      val colArray: Array[Int] = raster.getPixels(col, 0, 1, binaryTile.getHeight, null)
-      val histogram = colArray.groupBy(identity).mapValues(_.size).toList.sortWith { (e1, e2) => (e1._2 > e2._2) }
-      if (leftPadding == -1 && histogram.length >= 2 && histogram(1)._2 > CropThreshold) {
-        leftPadding = col
-      }
-      if (rightPadding == -1 && leftPadding != -1 &&
-        (histogram.length == 1 || histogram(1)._2 <= CropThreshold)) {
-        rightPadding = col
-      }
-    }
-    binaryTile.getSubimage(leftPadding, topPadding, rightPadding - leftPadding, bottomPadding - topPadding)
-  }
-
   def cosineSimilarity(x: Vector[Float], y: Vector[Float]): Float = {
     require(x.size == y.size)
     dotProduct(x, y) / (magnitude(x) * magnitude(y))
@@ -133,14 +98,6 @@ object ParserUtil {
 
   def magnitude(x: Vector[Float]): Float = {
     math.sqrt(x map (i => i * i) sum).toFloat
-  }
-
-  def extractTiles(outputPath: String, sourceFile: String): Unit = {
-    val img: BufferedImage = ImageIO.read(new File(sourceFile))
-    val imageParser = new MultiDeviceParser(new JavaOCRCharParser)
-    for ((img, i) <- imageParser.extractTileImages(img).view.zipWithIndex) {
-      ImageIO.write(img, "png", new File("%s/tile_%d.png".format(outputPath, i)))
-    }
   }
 
 }
