@@ -7,6 +7,7 @@ import me.rickychang.lpb.imageparser.TileStateParser
 import scala.collection.mutable.MutableList
 import me.rickychang.lpb.imageparser.IPhone5Parser
 import me.rickychang.lpb.imageparser.MultiDeviceParser
+import me.rickychang.lpb.imageparser.BinaryColorRatioCharParser
 
 /**
  * Utility object for testing solver against local images
@@ -14,7 +15,7 @@ import me.rickychang.lpb.imageparser.MultiDeviceParser
 object ImageSolver {
   
   private val boardSolver = new BoardSolver(new WordDictionary)
-  private val tileParser = new JavaOCRCharParser
+  private val tileParser = new BinaryColorRatioCharParser
   
   def findWords(imageFilePath: String, maxWords: Int): List[String] = {
     val boardImage = ImageIO.read(new File(imageFilePath))
