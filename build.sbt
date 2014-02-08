@@ -15,8 +15,8 @@ scalacOptions ++= Seq("-unchecked", "-deprecation")
 libraryDependencies ++= Seq(
 	"junit" % "junit" % "4.8.1" % "test",
 	"org.scalatest" %% "scalatest" % "1.8" % "test",
-	"org.twitter4j" % "twitter4j-core" % "3.0.3",
-	"org.twitter4j" % "twitter4j-stream" % "3.0.3",
+	"org.twitter4j" % "twitter4j-core" % "3.0.5",
+	"org.twitter4j" % "twitter4j-stream" % "3.0.5",
 	"com.typesafe.akka" % "akka-actor" % "2.0.4",
 	"com.typesafe" % "config" % "1.0.0",
 	"ch.qos.logback" % "logback-classic" % "1.0.9",
