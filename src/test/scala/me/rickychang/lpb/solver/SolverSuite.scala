@@ -14,6 +14,7 @@ import me.rickychang.lpb.board.OpponentOccupied
 import me.rickychang.lpb.board.PlayerOccupied
 import me.rickychang.lpb.board.Free
 import me.rickychang.lpb.board.GreedyStrategyOrdering
+import me.rickychang.lpb.replay.ReplayUtils
 
 @RunWith(classOf[JUnitRunner])
 class SolverSuite extends FunSuite {
@@ -24,7 +25,7 @@ class SolverSuite extends FunSuite {
   test("iPhone 5 Solver test board 1") {
     val boardImage = ImageIO.read(getClass.getResource("/images/test/iphone5-test-board1.png"))
     val gameBoard = parser.parseGameBoard(boardImage)
-    val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
+    val wordsToPlay = boardSolver.findMoves(gameBoard, Set.empty[String], 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
     assert(wordsToPlay == List(("ATTACHMENT", (5, -3)),
@@ -37,7 +38,7 @@ class SolverSuite extends FunSuite {
   test("iPhone 5 Solver test board 2") {
     val boardImage = ImageIO.read(getClass.getResource("/images/test/iphone5-test-board2.png"))
     val gameBoard = parser.parseGameBoard(boardImage)
-    val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
+    val wordsToPlay = boardSolver.findMoves(gameBoard, Set.empty[String], 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
     assert(wordsToPlay == List(("UNSTEADYING", (11, -4)),
@@ -50,7 +51,7 @@ class SolverSuite extends FunSuite {
   test("iPhone 5 Solver test board 3") {
     val boardImage = ImageIO.read(getClass.getResource("/images/test/iphone5-test-board3.png"))
     val gameBoard = parser.parseGameBoard(boardImage)
-    val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
+    val wordsToPlay = boardSolver.findMoves(gameBoard, Set.empty[String], 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
     assert(wordsToPlay == List(("BETTER", (6, 0)),
@@ -63,7 +64,7 @@ class SolverSuite extends FunSuite {
   test("iPhone 5 Solver twitter board 1") {
     val boardImage = ImageIO.read(getClass.getResource("/images/test/iphone5-twitter-board1.jpg"))
     val gameBoard = parser.parseGameBoard(boardImage)
-    val wordsToPlay = boardSolver.findMoves(gameBoard, 5).map {
+    val wordsToPlay = boardSolver.findMoves(gameBoard, Set.empty[String], 5).map {
       case (w, t) => (w, boardSolver.scoreDeltas(t))
     }
     assert(wordsToPlay == List(("WALLYDRAGS", (9, -7)),
@@ -75,7 +76,7 @@ class SolverSuite extends FunSuite {
 
   test("Winning word rankings") {
     val b = GameBoard("AB AB AB AB AB AB AB AB AB AB AB AB AB AB AB AB AB AB Aw Er Br Er Tr Tr Rr")
-    val wordsAndTiles = boardSolver.findMoves(b, 5)
+    val wordsAndTiles = boardSolver.findMoves(b, Set.empty[String], 5)
     val wordsToPlay = wordsAndTiles.map {
       case (w, t) => {
         val (p, o) = boardSolver.scoreDeltas(t)
@@ -94,4 +95,40 @@ class SolverSuite extends FunSuite {
       List(Free, Free, OpponentOccupied, PlayerOccupied, OpponentDefended))
   }
 
+  test("Played words direct input") {
+    // based on iPhone 5 Solver twitter board 1
+    val boardImage = ImageIO.read(getClass.getResource("/images/test/iphone5-twitter-board1.jpg"))
+    val gameBoard = parser.parseGameBoard(boardImage)
+    val wordsToPlay = boardSolver.findMoves(gameBoard, Set("GLASSWORK", "WALLYDRAGS"), 5).map {
+      case (w, t) => (w, boardSolver.scoreDeltas(t))
+    }
+    assert(wordsToPlay == List(
+      ("KARYOPLASMS", (8, -8)),
+      ("VOLKSRAADS", (9, -7)),
+      ("GALLOWGLASS", (8, -7))))
+  }
+
+  test("Played words parsed input") {
+    // based on iPhone 5 Solver twitter board 1
+    val boardImage = ImageIO.read(getClass.getResource("/images/test/iphone5-twitter-board1.jpg"))
+    val gameBoard = parser.parseGameBoard(boardImage)
+    val replayJson = """
+      {"players" : [{"username" : "Opponent"},
+                    {"username" : "Player"}],
+       "letters" : "ABCDEFGHIJKLMNOPQRSTUVWXY",
+       "perspective" : 1.0,
+       "columns" : 5.0,
+       "turns" : [{"w" : "GLASSWORK", "t" : 0.0},
+                  {"w" : "WALLYDRAGS", "t" : 1.0}]}
+    """
+    val wordsToPlay = boardSolver.findMoves(gameBoard, ReplayUtils.playedWords(replayJson), 5).map {
+      case (w, t) => (w, boardSolver.scoreDeltas(t))
+    }
+    print(replayJson)
+    print(ReplayUtils.playedWords(replayJson))
+    assert(wordsToPlay == List(
+      ("KARYOPLASMS", (8, -8)),
+      ("VOLKSRAADS", (9, -7)),
+      ("GALLOWGLASS", (8, -7))))
+  }
 }

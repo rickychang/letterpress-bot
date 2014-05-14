@@ -36,8 +36,10 @@ class BoardSolver(val wordDict: WordDictionary) {
    *  Returns a list of pairs of playable words and corresponds tiles,
    *  ordered by wordRanking function
    */
-  def findMoves(board: GameBoard, maxWords: Int): List[(String, List[BoardTile])] = {
+  def findMoves(board: GameBoard, playedWords: Set[String], maxWords: Int):
+      List[(String, List[BoardTile])] = {
     val validWords = wordDict.wordHistograms.flatMap(w => canPlay(board, w._1, w._2))
+      .filterNot((x) => playedWords.contains(x._1))
     validWords.sortWith((e1, e2) => {
       wordRanking(board, e1._2) > wordRanking(board, e2._2)
     }).take(maxWords).toList
@@ -47,8 +49,8 @@ class BoardSolver(val wordDict: WordDictionary) {
    * Returns optional string containing a sequence of words and score deltas
    * None, if no playable words were found
    */
-  def findWords(board: GameBoard, maxWords: Int): Option[String] = {
-    val words: String = findMoves(board, maxWords).map {
+  def findWords(board: GameBoard, playedWords: Set[String], maxWords: Int): Option[String] = {
+    val words: String = findMoves(board, playedWords, maxWords).map {
       case (w, t) => {
         val (p, o) = scoreDeltas(t)
         val a = if (isWinningMove(board, t)) "*" else ""
