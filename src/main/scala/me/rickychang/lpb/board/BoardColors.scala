@@ -101,7 +101,7 @@ object BoardBackgroundColors {
   val AllColors =   LightColors ++ DarkColors
 }
 
-object BoardThemeType extends Enumeration("Light", "Dark") {
+object BoardThemeType extends Enumeration {
   type BoardThemeType = Value
   val Light, Dark = Value
 }

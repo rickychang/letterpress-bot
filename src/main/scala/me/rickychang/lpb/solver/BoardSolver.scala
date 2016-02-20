@@ -9,7 +9,7 @@ import me.rickychang.lpb.board.TileState
 class BoardSolver(val wordDict: WordDictionary) {
 
   def scoreDeltas(wordTiles: List[BoardTile]): (Int, Int) = {
-    wordTiles.map(t => Pair(t._2.playerPotential, t._2.opponentPotential)).foldLeft((0, 0)) { (acc, v) => (acc._1 + v._1, acc._2 + v._2) }
+    wordTiles.map(t => (t._2.playerPotential, t._2.opponentPotential)).foldLeft((0, 0)) { (acc, v) => (acc._1 + v._1, acc._2 + v._2) }
   }
 
   def isWinningMove(board: GameBoard, wordTiles: List[BoardTile]): Boolean = {

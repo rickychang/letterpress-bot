@@ -17,8 +17,9 @@ import twitter4j.User
 import twitter4j.UserList
 import twitter4j.UserStreamListener
 import com.typesafe.config.ConfigFactory
-import com.weiglewilczek.slf4s.Logger
-import com.weiglewilczek.slf4s.Logging
+import org.slf4s.Logger
+import org.slf4s.LoggerFactory
+import org.slf4s.Logging
 import javax.imageio.IIOException
 import me.rickychang.lpb.imageparser.IPhone5Parser
 import me.rickychang.lpb.imageparser.MultiDeviceParser
@@ -28,7 +29,7 @@ import me.rickychang.lpb.board.InvalidTilesException
 class SimpleStatusListener(myUserId: Long, twitterRestClient: Twitter, boardSolver: BoardSolver) extends UserStreamListener with Logging {
 
   val NumWordsToReturn = 3
-  private val tLog = Logger("Tweets")
+  private val tLog = LoggerFactory("Tweets")
   private val bParser = new MultiDeviceParser(new JavaOCRCharParser)
 
   def onStatus(status: Status) {
@@ -37,7 +38,7 @@ class SimpleStatusListener(myUserId: Long, twitterRestClient: Twitter, boardSolv
         _logReceivedTweet(status)
         val attachedMedia = status.getMediaEntities
         if (!attachedMedia.isEmpty) {
-          logger.debug("Fetching image: %s".format(attachedMedia.head.getMediaURL))
+          log.debug("Fetching image: %s".format(attachedMedia.head.getMediaURL))
           val img = ImageIO.read(new URL(attachedMedia.head.getMediaURL))
           val tweetText = getResponseTweetText(img, status.getUser.getScreenName)
           if (tweetText.isDefined) {
@@ -52,9 +53,9 @@ class SimpleStatusListener(myUserId: Long, twitterRestClient: Twitter, boardSolv
         }
       }
     } catch {
-      case e @ (_: InvalidImageException | _: InvalidImageException) => logger.error(e.getMessage)
-      case e: IIOException => logger.error("javax.imageio.IIOException: %s, %s".format(e.getMessage, e.getCause))
-      case e: Exception => logger.error(e.toString + " " + e.getStackTrace().mkString("\n"))
+      case e @ (_: InvalidImageException | _: InvalidImageException) => log.error(e.getMessage)
+      case e: IIOException => log.error("javax.imageio.IIOException: %s, %s".format(e.getMessage, e.getCause))
+      case e: Exception => log.error(e.toString + " " + e.getStackTrace().mkString("\n"))
     }
   }
 
