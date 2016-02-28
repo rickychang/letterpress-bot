@@ -9,12 +9,13 @@ import me.rickychang.lpb.board.GameBoard
 import java.awt.Color
 
 @RunWith(classOf[JUnitRunner])
-class IPhone5ParsingSuite extends FunSuite {
+class IOSParsingSuite extends FunSuite {
 
-  val tileParser = new BinaryColorRatioCharParser
+  val tileParser = new JavaOCRCharParser
   val iPhone5Parser = new IPhone5Parser(tileParser)
   val iPadParser = new IPadParser(tileParser)
   val iPhone4Parser = new IPhone4Parser(tileParser)
+  val iPhone6Parser = new IPhone6Parser(tileParser)
   val multiDeviceParser = new MultiDeviceParser(tileParser)
 
   test("twitter board 1 parsing") {
@@ -115,16 +116,6 @@ class IPhone5ParsingSuite extends FunSuite {
     val b2 = multiDeviceParser.parseGameBoard(img2)
     assert(b == b2)
   }
-// Commenting out JavaOCR specific test
-//  test("Non-screenshot test 1") {
-//    val img = ImageIO.read(getClass.getResource("/images/test/non-board-iphone5-1.jpg"))
-//    try {
-//      iPhone5Parser.parseGameBoard(img)
-//      fail()
-//    } catch {
-//      case _: InvalidImageException =>
-//    }
-//  }
 
   test("MultiDeviceParsing") {
     val iphone5ImgCropped: BufferedImage = ImageIO.read(getClass.getResource("/images/test/iphone5-test-board12-cropped.png"))
@@ -146,6 +137,32 @@ class IPhone5ParsingSuite extends FunSuite {
     val expectedIPad = GameBoard("FR LR HR Sr Or YR KR Ar Mb Wb Fr Dr Rr Pb Vw Lb Lb Xr Xw Rr Ar Dw Gr Gr Sb")
     assert(multiDeviceParser.parseGameBoard(iPadImg) == expectedIPad)
 
+  }
+
+  test("iPhone 6 test 1") {
+    val iPhoneImg = ImageIO.read(getClass.getResource("/images/test/iphone6-test-board1.png"))
+    val expectedBoard = GameBoard("PR WR NR WR AR Or Lr Mr Or DR Hw Tb Yw Nb Er Lw Tw Yr Aw Aw Gw Rw Vw Kw Yw")
+    assert(multiDeviceParser.parseGameBoard(iPhoneImg) == expectedBoard)
+  }
+
+  test("iPhone 6 test 2") {
+    val iPhoneImg = ImageIO.read(getClass.getResource("/images/test/iphone6-test-board2.png"))
+
+    println(multiDeviceParser.parseGameBoard(iPhoneImg))
+    val expectedBoard = GameBoard("Cw Nr Sr Mw Ir Bw Pr Ar Uw Aw Sw Rw Cw Sr Hw Zw Dr Bw Fw Er Nr UR Or Nw Yw")
+    assert(multiDeviceParser.parseGameBoard(iPhoneImg) == expectedBoard)
+  }
+
+  test("iPhone 6 test 3") {
+    val iPhoneImg = ImageIO.read(getClass.getResource("/images/test/iphone6-test-board3.png"))
+    val expectedBoard = GameBoard("Dw Iw Pw Hw Kw Rw Sw Rw Tw Zw Pw Tw Bw Ww Ow Tw Ew Nw Dw Ow Rw Mw Ow Hw Nw")
+    assert(multiDeviceParser.parseGameBoard(iPhoneImg) == expectedBoard)
+  }
+
+  test("iPhone 6 test 4") {
+    val iPhoneImg = ImageIO.read(getClass.getResource("/images/test/iphone6-test-board4.png"))
+    val expectedBoard = GameBoard("Fw Vw Sw Cw Kw Sw Fw Dw Hw Ew Iw Nw Fw Nw Hw Hw Lw Tw Ow Jw Sw Ew Mw Nw Ow")
+    assert(multiDeviceParser.parseGameBoard(iPhoneImg) == expectedBoard)
   }
 
   test("Color diff") {

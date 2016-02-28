@@ -9,6 +9,7 @@ import me.rickychang.lpb.solver.WordDictionary
 
 object SimpleSolverBot extends App {
   val conf = ConfigFactory.load
+
   val botUserId = conf.getString("bot.userid").toLong
   val consumerKey = conf.getString("consumer.key")
   val consumerSecret = conf.getString("consumer.secret")

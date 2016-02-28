@@ -10,7 +10,7 @@ class MultiDeviceParser(cParser: TileCharParser) extends BoardParser {
   val charParser = cParser
 
   private val deviceSpecificParsers: List[IOSDeviceParser] =
-    List(new IPhone5Parser(cParser), new IPhone4Parser(cParser), new IPadParser(cParser))
+    List(new IPhone5Parser(cParser), new IPhone4Parser(cParser), new IPadParser(cParser), new IPhone6Parser(cParser))
 
   /**
    * Find most appropriate device-specific parser for a given image.

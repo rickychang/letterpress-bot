@@ -15,7 +15,7 @@ import me.rickychang.lpb.imageparser.BinaryColorRatioCharParser
 object ImageSolver {
   
   private val boardSolver = new BoardSolver(new WordDictionary)
-  private val tileParser = new BinaryColorRatioCharParser
+  private val tileParser = new JavaOCRCharParser
   
   def findWords(imageFilePath: String, maxWords: Int): List[String] = {
     val boardImage = ImageIO.read(new File(imageFilePath))

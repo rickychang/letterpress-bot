@@ -9,7 +9,7 @@ import java.awt.Color
 
 class BinaryColorRatioCharParser(trainingImagesPath: String = DefaultTrainingImagePath) extends TileCharParser {
 
-  private val NumRegionRowColumns = 5
+  private val NumRegionRowColumns = 4
 
   private val trainingImageFileNames = for {
     l <- ('A' to 'Z')
@@ -47,7 +47,9 @@ class BinaryColorRatioCharParser(trainingImagesPath: String = DefaultTrainingIma
 
   def extractChar(tileImage: BufferedImage): Char = {
     val v = getFeatureVector(tileImage)
-    trainingVectors.map(e => (e._2, cosineSimilarity(v, e._1))).maxBy(_._2)._1
+    val letterSims = trainingVectors.map(e => (e._2, cosineSimilarity(v, e._1)))
+    print(letterSims.sortBy(-_._2))
+    letterSims.maxBy(_._2)._1
   }
 
 }

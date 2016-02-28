@@ -1,5 +1,8 @@
 package me.rickychang.lpb.imageparser
 
+import java.io.File
+import javax.imageio.ImageIO
+
 import me.rickychang.lpb.board.BoardThemeType._
 import java.awt.image.BufferedImage
 import me.rickychang.lpb.board.GameBoard
@@ -67,7 +70,10 @@ trait IOSDeviceParser extends BoardParser {
     val tiles = for {
       y <- 0 until bHeight by tHeight
       x <- 0 until bWidth by tWidth
-    } yield bImage.getSubimage(x, y, tWidth, tHeight)
+    } yield ParserUtil.resizeImage(bImage.getSubimage(x, y, tWidth, tHeight), 128, 128)
+    tiles.zipWithIndex.map { e =>
+      ImageIO.write(e._1, "jpg", new File("/Users/ricky/Desktop/" + e._2 + ".jpg"))
+    }
     tiles.toList
   }
 
